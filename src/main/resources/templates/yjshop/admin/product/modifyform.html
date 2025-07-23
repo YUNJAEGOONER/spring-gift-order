@@ -1,0 +1,36 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+  <div>
+    <form th:action="@{/view/admin/products/modify/{id}(id=${product.id})}"
+          th:object="${productRequestDto}"
+          method="post"
+          class="admin-form">
+
+      <h3>상품 수정하기</h3>
+
+      <div class="form-group">
+        <label><strong>상품명</strong></label>
+        <input type="text" name="name" placeholder="상품명 입력" th:value="${product.name}">
+        <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+      </div>
+
+      <div class="form-group">
+        <label><strong>가격</strong></label>
+        <input type="number" name="price" placeholder="상품 가격 입력" th:value="${product.price}">
+        <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</div>
+      </div>
+
+      <div class="form-group">
+        <label><strong>이미지 주소</strong></label>
+        <input type="text" name="imageUrl" placeholder="상품 이미지 주소 입력" th:value="${product.imageUrl}">
+        <div class="error" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}">imageUrl Error</div>
+      </div>
+
+      <div class="form-buttons">
+        <input type="submit" value="상품 수정하기">
+      </div>
+    </form>
+  </div>
+
+</div>
+</html>

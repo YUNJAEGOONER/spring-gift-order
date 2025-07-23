@@ -1,0 +1,139 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+
+
+  <div id="search-div">
+    <style>
+
+      #search-div {
+        max-width: 900px;
+        margin: 20px auto 10px auto; /* 위쪽 20px, 아래쪽 10px, 좌우 자동(가운데 정렬) */
+      }
+
+      /* 검색폼 너비 100%로 테이블과 맞춤 */
+      #search {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end; /* 오른쪽 정렬 */
+      }
+
+      /* 검색폼 내부 input, 버튼 스타일 (필요하면) */
+      #search input[type="number"] {
+        flex-grow: 1; /* 입력창이 가로 공간 대부분 차지 */
+        max-width: 200px; /* 최대 크기 제한 */
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      #search input[type="submit"] {
+        padding: 7px 14px;
+        border: none;
+        background-color: #2c3e50;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      #search input[type="submit"]:hover {
+        background-color: #34495e;
+      }
+
+    </style>
+    <form id="search" th:action="@{/view/admin/products/search}" method="get">
+      <input type="number" name="id" placeholder="상품 아이디 입력">
+      <input type="submit" value="상품 검색하기">
+    </form>
+  </div>
+
+  <table>
+    <style>
+
+      td {
+        text-align: center; /* td 내 내용 가로 중앙 정렬 */
+        vertical-align: middle; /* 세로 정렬 유지 */
+        padding: 12px 15px; /* 기존 padding 유지 */
+      }
+
+      /* form들을 inline-block으로 만들어 한 줄에 나란히 */
+      td > form {
+        display: inline-block;
+        margin: 0 6px; /* 좌우 마진으로 간격 */
+        vertical-align: middle;
+      }
+
+    </style>
+
+    <thead>
+    <tr>
+      <th>상품ID</th>
+      <th>상품명</th>
+      <th>가격</th>
+      <th>이미지</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="product : ${productList}">
+      <td th:text="${product.id}"></td>
+      <td th:text="${product.name}"></td>
+      <td th:text="${product.price}"></td>
+      <td><img th:src="${product.imageUrl}" width="100px" alt="상품 이미지"></td>
+
+
+      <td>
+        <form th:action="@{/view/admin/products/remove/{id}(id=${product.id})}" method="post">
+          <button type="submit">상품 삭제</button>
+        </form>
+        <button th:onclick="|location.href='@{/view/admin/products/modify/{id}(id=${product.id})}'|">상품 수정</button>
+        <button th:onclick="|location.href='@{/view/admin/products/{id}/options/edit(id=${product.id})}'|">옵션 수정</button>
+      </td>
+
+
+    </tr>
+    </tbody>
+  </table>
+
+  <div th:if="${!productList.empty}">
+    <ul class="pagination justify-content-center">
+      <!-- 이전 버튼 -->
+      <li class="page-item" th:classappend="${!productList.hasPrevious()} ? 'disabled'">
+        <a class="page-link"
+           th:if="${productList.hasPrevious()}"
+           th:href="@{|?page=${productList.number - 1}|}">
+          <span>이전</span>
+        </a>
+        <a class="page-link" th:unless="${productList.hasPrevious()}">
+          <span>이전</span>
+        </a>
+      </li>
+      <!-- 페이지 번호들 -->
+      <li th:each="page : ${#numbers.sequence(0, productList.totalPages - 1)}"
+          th:if="${page >= productList.number - 5 and page <= productList.number + 5}"
+          th:classappend="${page == productList.number} ? ' active'"
+          class="page-item">
+        <a class="page-link"
+           th:text="${page + 1}"
+           th:href="@{|?page=${page}|}"></a>
+      </li>
+      <!-- 다음 버튼 -->
+      <li class="page-item" th:classappend="${!productList.hasNext()} ? 'disabled'">
+        <a class="page-link"
+           th:if="${productList.hasNext()}"
+           th:href="@{|?page=${productList.number + 1}|}">
+          <span>다음</span>
+        </a>
+        <a class="page-link" th:unless="${productList.hasNext()}">
+          <span>다음</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</div>
+</html>

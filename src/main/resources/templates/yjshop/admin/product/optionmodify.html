@@ -1,0 +1,179 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+
+  <div id="product-manage-page">
+    <style>
+      #product-manage-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        font-family: sans-serif;
+      }
+
+      #product-manage-page .card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      #product-manage-page .product-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      #product-manage-page .product-info div {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      #product-manage-page .product-info label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      #product-manage-page .product-info img {
+        width: 120px;
+        height: auto;
+        border: 1px solid #ddd;
+        padding: 5px;
+      }
+
+      #product-manage-page table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      #product-manage-page th,
+      #product-manage-page td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+      }
+
+      #product-manage-page input[type="text"] {
+        width: 95%;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+
+      #product-manage-page .admin-form {
+        display: contents;
+      }
+
+      /* 내부 버튼만 스타일 적용 (외부 스타일 덮지 않게 제한) */
+      #product-manage-page button:not(.external-btn) {
+        padding: 6px 12px;
+        cursor: pointer;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        border-radius: 4px;
+      }
+
+      #product-manage-page button:not(.external-btn):hover {
+        background-color: #0056b3;
+      }
+
+      #product-manage-page form[action*="remove"] button:not(.external-btn) {
+        background-color: #dc3545;
+      }
+
+      #product-manage-page h3 {
+        margin-top: 0;
+      }
+    </style>
+
+    <!-- 상품 정보 -->
+    <div class="card">
+      <h3>상품 정보</h3>
+      <div class="product-info">
+        <div>
+          <label>상품명</label>
+          <p th:text="${product.name}"></p>
+        </div>
+        <div>
+          <label>가격</label>
+          <p th:text="${product.price}"></p>
+        </div>
+        <div>
+          <label>이미지</label>
+          <img th:src="${product.imageUrl}" alt="상품 이미지"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- 옵션 수정 -->
+    <div class="card">
+      <h3>옵션 관리</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>옵션</th>
+          <th>수량</th>
+          <th>가격</th>
+          <th>수정</th>
+          <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="option : ${product.options}">
+          <form th:action="@{/view/admin/options/edit/{id}(id=${option.id})}" method="post"
+                class="admin-form">
+            <td>
+              <input type="text" name="name" placeholder="옵션명 입력" th:value="${option.optionName}"/>
+            </td>
+            <td>
+              <input type="text" name="quantity" placeholder="수량 입력" th:value="${option.quantity}"/>
+            </td>
+            <td>
+              <input type="text" name="price" placeholder="가격 입력" th:value="${option.price}"/>
+            </td>
+            <td>
+              <input type="hidden" name="productId" th:value="${option.id}"/>
+              <button type="submit">수정</button>
+            </td>
+          </form>
+          <td>
+            <form th:action="@{/view/admin/options/remove/{id}(id=${option.id})}" method="post">
+              <button type="submit">삭제</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 옵션 추가 -->
+    <div class="card">
+      <h3>옵션 추가</h3>
+      <form th:action="@{/view/admin/options/add/{id}(id=${product.id})}" method="post">
+        <table>
+          <tr>
+            <td>
+              <input type="text" name="name" placeholder="옵션명 입력"/>
+            </td>
+            <td>
+              <input type="text" name="quantity" placeholder="수량 입력"/>
+            </td>
+            <td>
+              <input type="text" name="price" placeholder="가격 입력"/>
+            </td>
+            <td colspan="2">
+              <button type="submit" class="external-btn">옵션 추가</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+</html>
