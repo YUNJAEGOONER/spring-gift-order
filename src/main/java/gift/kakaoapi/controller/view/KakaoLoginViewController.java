@@ -1,4 +1,4 @@
-package gift.kakoapi.controller;
+package gift.kakaoapi.controller.view;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,6 @@ public class KakaoLoginViewController {
 
     @GetMapping("/login")
     public String Login(Model model){
-        //step1 인가 코드를 받기
         String login_url = "https://kauth.kakao.com/oauth/authorize?scope=talk_message&response_type=code"
                 + "&redirect_uri="
                 + REDIRECT_URI

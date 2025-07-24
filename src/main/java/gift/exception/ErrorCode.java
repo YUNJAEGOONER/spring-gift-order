@@ -19,7 +19,10 @@ public enum ErrorCode {
     UNAVAILABLE_OPTION_NAME(HttpStatus.BAD_REQUEST, "이미 사용중인 옵션명 입니다."),
     UNAVAILABLE_OPTION_PRICE(HttpStatus.BAD_REQUEST, "상품의 가격은 0원 이상이어야 합니다."),
 
-    LOGIN_UNAVAILABLE(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 잘못되었습니다."),;
+    LOGIN_UNAVAILABLE(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 잘못되었습니다."),
+
+    KAKAO_CLIENT_ERROR(HttpStatus.BAD_REQUEST, "KAKAO CLIENT ERROR"),
+    KAKAO_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "KAKAO SERVER ERROR");
 
     private final HttpStatus statusCode;
     private final String message;
