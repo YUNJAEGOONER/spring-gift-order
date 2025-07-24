@@ -1,0 +1,182 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+  <style>
+    .admin-form {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #f8fafd;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .admin-form h3 {
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #333;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .option-group {
+      margin-bottom: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
+
+    .option-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .option-row input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .form-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .form-buttons input[type="submit"] {
+      background-color: #28a745;
+      border: none;
+      padding: 12px 20px;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      margin-top: 10px;
+      background-color: #3498db;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .error {
+      color: crimson;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+  </style>
+
+  <form th:action="@{/view/admin/products/add}"
+        th:object="${productOptionRequestDto}"
+        method="post"
+        class="admin-form">
+
+    <h3>상품 등록하기</h3>
+
+    <div class="form-group">
+      <label>상품명</label>
+      <input type="text" name="name" placeholder="상품명 입력" th:value="${requestDto.name}">
+      <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    </div>
+
+    <div class="form-group">
+      <label>가격</label>
+      <input type="number" name="price" placeholder="상품 가격 입력" th:value="${requestDto.price}">
+      <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+    </div>
+
+    <div class="form-group">
+      <label>이미지 주소</label>
+      <input type="text" name="imageUrl" placeholder="이미지 URL 입력" th:value="${requestDto.imageUrl}">
+      <div class="error" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+    </div>
+
+    <div id="options-section">
+      <label><strong>옵션</strong></label>
+      <div class="option-group">
+        <div class="option-row">
+          <input type="text" name="options[0].name" placeholder="옵션명">
+          <input type="number" name="options[0].quantity" placeholder="수량">
+          <input type="number" name="options[0].price" placeholder="가격">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button type="button" class="add-btn" onclick="addOption()">+ 옵션 추가</button>
+    </div>
+
+    <div class="form-buttons">
+      <input type="submit" value="상품 등록하기">
+    </div>
+
+  </form>
+
+  <script>
+    let optionIndex = 1;
+
+    function addOption() {
+      const section = document.getElementById('options-section');
+
+      const group = document.createElement('div');
+      group.className = 'option-group';
+      group.innerHTML = `
+        <div class="option-row">
+          <input type="text" name="options[${optionIndex}].name" placeholder="옵션명">
+          <input type="number" name="options[${optionIndex}].quantity" placeholder="수량">
+          <input type="number" name="options[${optionIndex}].price" placeholder="가격">
+          <button type="button" class="delete-btn" onclick="removeOption(this)">X</button>
+        </div>
+      `;
+      section.appendChild(group);
+      optionIndex++;
+    }
+
+    function removeOption(button) {
+      const section = document.getElementById('options-section');
+      const group = button.closest('.option-group');
+
+      if (section.children.length > 1) {
+        section.removeChild(group);
+        optionIndex--;
+      } else {
+        alert("옵션은 최소 1개 이상이어야 합니다.");
+      }
+    }
+  </script>
+</div>
+</html>

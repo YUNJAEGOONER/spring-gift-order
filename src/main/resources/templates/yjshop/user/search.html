@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html layout:decorate="~{yjshop/user/layout}">
+<div layout:fragment="content">
+
+  <style>
+    .product-list {
+      max-width: 800px;
+      margin: 30px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px; /* 카드 간격 좀 더 */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .product-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffffff;
+      padding: 30px; /* 패딩 더 늘림 */
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      min-height: 160px; /* 높이 더 넉넉하게 */
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+      gap: 30px; /* 이미지와 텍스트 간격도 넓힘 */
+      flex: 1;
+    }
+
+    .product-info img {
+      width: 120px; /* 이미지 크기 약간 키움 */
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .product-text {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .product-name {
+      font-weight: bold;
+      font-size: 20px; /* 글자 크기 약간 키움 */
+    }
+
+    .product-price {
+      color: #555;
+      font-size: 18px;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 12px; /* 버튼 간격 좀 더 */
+      align-items: center;
+    }
+
+    .product-actions form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .product-actions input[type="number"] {
+      width: 60px;
+      height: 34px;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .product-actions input[type="submit"],
+    .product-actions button {
+      height: 36px;
+      padding: 0 18px;
+      font-size: 15px;
+      font-weight: bold;
+      background-color: #a2d36c;
+      color: #222;
+      border: 1px solid #8bbf59;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .product-actions input[type="submit"]:hover,
+    .product-actions button:hover {
+      background-color: #89bf4f;
+    }
+
+    .pagination {
+      margin-top: 30px;
+    }
+
+    .page-item a.page-link {
+      color: #27ae60;
+      border-radius: 6px;
+    }
+
+    .page-item.active a.page-link {
+      background-color: #27ae60;
+      color: white;
+      border-color: #27ae60;
+    }
+
+    .page-item.disabled a.page-link {
+      color: #ccc;
+    }
+
+  </style>
+
+  <div class="product-list">
+    <div class="product-card" th:each="product : ${productList}">
+      <div class="product-info">
+        <a th:href="@{/view/products/info(id=${product.id})}">
+          <img th:src="@{${product.imageUrl}}" alt="상품 이미지" />
+        </a>
+        <div class="product-text">
+          <div class="product-name" th:text="${product.name}"></div>
+          <div class="product-price" th:text="'₩ ' + ${product.price}"></div>
+        </div>
+      </div>
+
+      <div class="product-actions">
+        <form th:action="@{/view/my/wishlist}" method="post">
+          <input type="hidden" name="productId" th:value="${product.id}" />
+          <input type="number" name="quantity" value="1" min="1" />
+          <input type="submit" value="장바구니" />
+        </form>
+
+        <form th:action="@{/view/my/payment}" method="post">
+          <input type="hidden" name="productId" th:value="${product.id}" />
+          <input type="submit" value="구매하기" />
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div th:if="${!productList.empty}">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item" th:classappend="${!productList.hasPrevious()} ? ' disabled'">
+        <a class="page-link"
+           th:href="@{|/view/products/search?name=${searchkeyword}&page=${productList.number - 1}&size=${productList.size}|}">
+          이전
+        </a>
+      </li>
+
+      <li th:each="page : ${#numbers.sequence(0, productList.totalPages - 1)}"
+          th:if="${page >= productList.number - 5 and page <= productList.number + 5}"
+          th:classappend="${page == productList.number} ? ' active'"
+          class="page-item">
+        <a class="page-link"
+           th:text="${page + 1}"
+           th:href="@{|/view/products/search?name=${searchkeyword}&page=${page}&size=${productList.size}|}"></a>
+      </li>
+
+      <li class="page-item" th:classappend="${!productList.hasNext()} ? ' disabled'">
+        <a class="page-link"
+           th:href="@{|/view/products/search?name=${searchkeyword}&page=${productList.number + 1}&size=${productList.size}|}">
+          다음
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+</div>
+</html>

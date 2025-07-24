@@ -1,0 +1,96 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+  <div id="search-div">
+    <style>
+
+      #search-div {
+        max-width: 900px;
+        margin: 20px auto 10px auto; /* 위쪽 20px, 아래쪽 10px, 좌우 자동(가운데 정렬) */
+      }
+
+      /* 검색폼 너비 100%로 테이블과 맞춤 */
+      #search {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end; /* 오른쪽 정렬 */
+      }
+
+      /* 검색폼 내부 input, 버튼 스타일 (필요하면) */
+      #search input[type="email"] {
+        flex-grow: 1;        /* 입력창이 가로 공간 대부분 차지 */
+        max-width: 200px;    /* 최대 크기 제한 */
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      #search input[type="submit"] {
+        padding: 7px 14px;
+        border: none;
+        background-color: #2c3e50;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      #search input[type="submit"]:hover {
+        background-color: #34495e;
+      }
+
+    </style>
+    <form id = "search" th:action="@{/view/admin/members/search}" method="get">
+      <input type="email" name="email" placeholder="회원 이메일 조회">
+      <input type="submit" value="회원 검색하기">
+    </form>
+  </div>
+
+  <table>
+
+    <style>
+      td {
+        text-align: center; /* td 내 내용 가로 중앙 정렬 */
+        vertical-align: middle; /* 세로 정렬 유지 */
+        padding: 12px 15px; /* 기존 padding 유지 */
+      }
+
+      /* form들을 inline-block으로 만들어 한 줄에 나란히 */
+      td > form {
+        display: inline-block;
+        margin: 0 6px; /* 좌우 마진으로 간격 */
+        vertical-align: middle;
+      }
+    </style>
+    <thead>
+    <tr>
+      <th>회원ID</th>
+      <th>이메일</th>
+      <th>권한</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="member:${memberList}">
+      <td th:text="${member.memberId}"></td>
+      <td th:text="${member.email}"></td>
+      <td th:text="${member.role}"></td>
+
+      <td>
+        <form th:action="@{/view/admin/members/modify/{id}(id=${member.memberId})}" method="post">
+          <button type="submit">회원 수정</button>
+        </form>
+
+        <form th:action="@{/view/admin/members/remove/{id}(id=${member.memberId})}" method="post">
+          <button type="submit">회원 삭제</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+</html>
