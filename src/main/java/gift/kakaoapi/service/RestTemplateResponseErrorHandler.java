@@ -5,9 +5,7 @@ import gift.kakaoapi.exception.KakaoLoginException;
 import java.io.IOException;
 import java.net.URI;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResponseErrorHandler;
 
 public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
