@@ -1,6 +1,7 @@
 package gift.kakaoapi.service;
 
 import gift.kakaoapi.dto.TokenResponseDto;
+import gift.kakaoapi.dto.UserInfo;
 import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,7 @@ public class KakaoLoginService {
                 .build();
     }
 
-    public String getAccessToken(String authorizationCode){
-
+    public TokenResponseDto getAccessToken(String authorizationCode) {
         log.info("[step2:토큰 받기]: 회원 확인 및 등록 ");
         String url = "https://kauth.kakao.com/oauth/token";
 
@@ -48,10 +48,23 @@ public class KakaoLoginService {
         body.add("code", authorizationCode);
 
         var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
-        TokenResponseDto token = restTemplate.postForEntity(url, request, TokenResponseDto.class).getBody();
-
-        return token.accessToken();
+        return restTemplate.postForEntity(url, request, TokenResponseDto.class).getBody();
     }
 
+    public UserInfo getUserInfo(String authorizationCode) {
+        log.info("[step3:사용자 로그인 처리]: 사용자 정보 가져오기");
+        String url = "https://kapi.kakao.com/v2/user/me";
 
+        //요청 헤더
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + authorizationCode);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        //요청 바디 - property_keys 파라미터를 사용하면 특정 정보만 지정해 요청할 수 있습니다
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("property_keys", "[\"kakao_account.email\"]");
+
+        var request = new RequestEntity<>(body, headers, HttpMethod.GET, URI.create(url));
+        return restTemplate.postForEntity(url, request, UserInfo.class).getBody();
+    }
 }
