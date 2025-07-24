@@ -7,6 +7,7 @@ import gift.member.dto.MemberRequestDto;
 import gift.member.entity.Member;
 import gift.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import org.slf4j.Logger;
@@ -15,12 +16,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class KakaoLoginViewController {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoLoginViewController.class);
+
     @Value("${kakao.client_id}")
     private String REST_API_KEY;
 
@@ -42,16 +45,29 @@ public class KakaoLoginViewController {
     }
 
     //로그인 화면 불러오기
-    @GetMapping("/view/login")
+    @GetMapping("/view/loginform")
     public String kakaoLoginForm(Model model){
-        String login_url = "https://kauth.kakao.com/oauth/authorize?scope=talk_message&response_type=code"
+        String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
                 + "&redirect_uri="
                 + REDIRECT_URI
                 + "&client_id="
                 + REST_API_KEY;
-
+        model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("login_url", login_url);
-        return "yjshop/kakaoLogin";
+        return "/yjshop/user/login";
+    }
+
+    //필터예외처리 -> forward (error 메시지를 request에 setAttribute)
+    @PostMapping("view/login/error")
+    public String loginError(HttpServletRequest request, Model model){
+        String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
+                + "&redirect_uri="
+                + REDIRECT_URI
+                + "&client_id="
+                + REST_API_KEY;
+        model.addAttribute("errormsg", request.getAttribute("errormsg"));
+        model.addAttribute("login_url", login_url);
+        return "/yjshop/user/loginerror";
     }
 
     // 리다이렉트 URI: 카카오 로그인의 인가 코드를 전달하기 위한 리다이렉트 URI를 등록합니다.

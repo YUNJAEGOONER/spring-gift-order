@@ -57,14 +57,6 @@ public class LoginViewController {
         return "redirect:/view/loginform";
     }
 
-    //로그인 화면을 보여주는 메서드
-    @GetMapping("/loginform")
-    public String loginForm(Model model){
-        model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
-        return "/yjshop/user/login";
-    }
-
-
     //로그인 기능 -> 토큰을 반환(쿠키에 저장)
     @PostMapping("/login")
     public String login(HttpServletRequest request) {
@@ -74,12 +66,6 @@ public class LoginViewController {
             return "redirect:/view/admin/products";
         }
         return "redirect:/view/products/list";
-    }
-
-    @PostMapping("/login/error")
-    public String loginError(HttpServletRequest request, Model model){
-        model.addAttribute("errormsg", request.getAttribute("errormsg"));
-        return "/yjshop/user/loginerror";
     }
 
     //로그아웃 기능 -> 토큰을 만료시킴
