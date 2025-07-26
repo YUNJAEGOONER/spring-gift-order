@@ -2,7 +2,6 @@ package gift.kakaoapi.controller;
 
 import gift.jwt.JwtAuthService;
 import gift.kakaoapi.dto.UserInfo;
-import gift.kakaoapi.dto.UserInfo.KakaoAccount;
 import gift.kakaoapi.service.KakaoLoginService;
 import gift.member.dto.MemberRequestDto;
 import gift.member.entity.Member;
@@ -10,7 +9,6 @@ import gift.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.net.HttpCookie;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
