@@ -10,6 +10,7 @@ import gift.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.net.HttpCookie;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +96,7 @@ public class KakaoLoginViewController {
         //로그인 정보를 바탕으로 JWT를 쿠키를 통해 전달
         Cookie tcookie = new Cookie("token", token);
         tcookie.setPath("/");
+        tcookie.setHttpOnly(true);
         httpServletResponse.addCookie(tcookie);
 
         return "redirect:/view/products/list";

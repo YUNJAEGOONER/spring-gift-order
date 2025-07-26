@@ -7,16 +7,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UserInfo {
 
     @JsonProperty("id")
-    String id;
+    private String id;
 
     @JsonProperty("kakao_account")
-    public KakaoAccount kakaoAccount;
+    private KakaoAccount kakaoAccount;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoAccount {
 
         @JsonProperty("email")
-        String email;
+        private String email;
 
         public String getEmail() {
             return email;
