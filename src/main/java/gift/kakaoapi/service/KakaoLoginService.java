@@ -68,7 +68,7 @@ public class KakaoLoginService {
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("property_keys", "[\"kakao_account.email\"]");
 
-        var request = new RequestEntity<>(body, headers, HttpMethod.GET, URI.create(url));
+        var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
         return restTemplate.postForEntity(url, request, UserInfo.class).getBody();
     }
 }
