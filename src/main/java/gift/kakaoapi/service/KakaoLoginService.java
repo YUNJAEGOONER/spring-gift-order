@@ -3,6 +3,7 @@ package gift.kakaoapi.service;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
 import java.net.URI;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +25,13 @@ public class KakaoLoginService {
     @Value("${kakao.redirect_uri}")
     private String REDIRECT_URI;
 
+    //스프링 MVC가 제공해주는 외부와의 HTTP 통신 도구
     private final RestTemplate restTemplate;
 
     public KakaoLoginService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder
+                .connectTimeout(Duration.ofSeconds(5L))
+                .readTimeout(Duration.ofSeconds(5L))
                 .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
     }
