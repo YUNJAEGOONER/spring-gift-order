@@ -2,6 +2,7 @@ package gift.kakaoapi.controller;
 
 import gift.jwt.JwtAuthService;
 import gift.kakaoapi.dto.UserInfo;
+import gift.kakaoapi.dto.UserInfo.KakaoAccount;
 import gift.kakaoapi.service.KakaoLoginService;
 import gift.member.dto.MemberRequestDto;
 import gift.member.entity.Member;
@@ -25,10 +26,10 @@ public class KakaoLoginViewController {
     private static final Logger log = LoggerFactory.getLogger(KakaoLoginViewController.class);
 
     @Value("${kakao.client_id}")
-    private String REST_API_KEY;
+    private String restApiKey;
 
     @Value("${kakao.redirect_uri}")
-    private String REDIRECT_URI;
+    private String redirectUri;
 
     private final KakaoLoginService kakaoLoginService;
     private final MemberService memberService;
@@ -49,9 +50,9 @@ public class KakaoLoginViewController {
     public String kakaoLoginForm(Model model){
         String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
                 + "&redirect_uri="
-                + REDIRECT_URI
+                + redirectUri
                 + "&client_id="
-                + REST_API_KEY;
+                + restApiKey;
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("login_url", login_url);
         return "/yjshop/user/login";
@@ -62,9 +63,9 @@ public class KakaoLoginViewController {
     public String loginError(HttpServletRequest request, Model model){
         String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
                 + "&redirect_uri="
-                + REDIRECT_URI
+                + redirectUri
                 + "&client_id="
-                + REST_API_KEY;
+                + restApiKey;
         model.addAttribute("errormsg", request.getAttribute("errormsg"));
         model.addAttribute("login_url", login_url);
         return "/yjshop/user/loginerror";

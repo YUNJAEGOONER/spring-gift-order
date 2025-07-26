@@ -13,7 +13,7 @@ public class UserInfo {
     public KakaoAccount kakaoAccount;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class KakaoAccount {
+    public static class KakaoAccount {
 
         @JsonProperty("email")
         String email;
@@ -21,6 +21,7 @@ public class UserInfo {
         public String getEmail() {
             return email;
         }
+
     }
 
     public String getId() {
@@ -30,6 +31,7 @@ public class UserInfo {
     public KakaoAccount getKakaoAccount() {
         return kakaoAccount;
     }
+
 
 }
 
