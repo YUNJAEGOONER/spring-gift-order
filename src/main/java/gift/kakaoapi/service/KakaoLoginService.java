@@ -19,10 +19,10 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoLoginService {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoLoginService.class);
-    @Value("${kakao.client_id}")
+    @Value("${kakao.client-id}")
     private String REST_API_KEY;
 
-    @Value("${kakao.redirect_uri}")
+    @Value("${kakao.redirect-uri}")
     private String REDIRECT_URI;
 
     //스프링 MVC가 제공해주는 외부와의 HTTP 통신 도구

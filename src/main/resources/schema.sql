@@ -38,3 +38,16 @@ create table wishlist
     foreign key (option_id) references option (id),
     foreign key (member_id) references member (id)
 );
+
+create table orders
+(
+    id              bigint auto_increment,
+    member_id       bigint not null,
+    option_id       bigint not null,
+    quantity        int    not null,
+    order_date_time DATE   not null,
+    message         varchar(500),
+    primary key (id),
+    foreign key (member_id) references member (id),
+    foreign key (option_id) references option (id)
+);
