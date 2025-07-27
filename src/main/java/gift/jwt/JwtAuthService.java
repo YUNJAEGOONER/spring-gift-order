@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 //JWT와 관련된 서비스 :
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 public class JwtAuthService {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthService.class);
-    private final String secretKey = "ComeOnYouGunnersNorthLondonisRedNorthLondonFOREVER";
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     //payload의 정보를 추출하는 함수
     public Long getMemberId(String token){

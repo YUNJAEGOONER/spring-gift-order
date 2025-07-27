@@ -67,6 +67,7 @@ public class LoginFilter implements Filter {
             //쿠키 발행 (쿠키에 토큰을 저장)
             Cookie tcookie = new Cookie("token", token);
             tcookie.setPath("/");
+            tcookie.setHttpOnly(true);
             httpServletResponse.addCookie(tcookie);
 
             request.setAttribute("token", token);
