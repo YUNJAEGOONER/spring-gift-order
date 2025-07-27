@@ -24,10 +24,10 @@ public class KakaoLoginViewController {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoLoginViewController.class);
 
-    @Value("${kakao.client_id}")
+    @Value("${kakao.client-id}")
     private String restApiKey;
 
-    @Value("${kakao.redirect_uri}")
+    @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
     private final KakaoLoginService kakaoLoginService;
@@ -58,7 +58,7 @@ public class KakaoLoginViewController {
     }
 
     //필터예외처리 -> forward (error 메시지를 request에 setAttribute)
-    @PostMapping("view/login/error")
+    @PostMapping("/view/login/error")
     public String loginError(HttpServletRequest request, Model model){
         String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
                 + "&redirect_uri="
@@ -71,7 +71,7 @@ public class KakaoLoginViewController {
     }
 
     // 리다이렉트 URI: 카카오 로그인의 인가 코드를 전달하기 위한 리다이렉트 URI를 등록합니다.
-    @GetMapping("/kakaoLogin")
+    @GetMapping("/kakao-login")
     public String kakaoLogin(
             @RequestParam("code") String authorizationCode,
             HttpServletResponse httpServletResponse
