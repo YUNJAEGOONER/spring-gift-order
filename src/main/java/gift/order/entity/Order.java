@@ -8,9 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -23,7 +25,7 @@ public class Order {
     @JoinColumn(name = "option_id")
     Option option;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "member_id")
     Member member;
 
@@ -31,8 +33,44 @@ public class Order {
     Integer quantity;
 
     @Column(name = "order_date_time", nullable = false)
-    String orderDateTime;
+    LocalDateTime orderDateTime;
 
     String message;
+
+    protected Order() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Option getOption() {
+        return option;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public LocalDateTime getOrderDateTime() {
+        return orderDateTime;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Order(Option option, Member member, Integer quantity, String message){
+        this.option = option;
+        this.member = member;
+        this.quantity = quantity;
+        this.message = message;
+        this.orderDateTime = LocalDateTime.now().withNano(0);
+    }
 
 }
