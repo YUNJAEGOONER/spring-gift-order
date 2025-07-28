@@ -12,6 +12,5 @@ public record OrderDeatilDto(
         Integer price,
         String message
 ) {
-
-
+    
 }

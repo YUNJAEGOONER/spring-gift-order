@@ -1,6 +1,5 @@
 package gift.order.service;
 
-import gift.infra.LoggedInMember;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
@@ -37,7 +36,6 @@ public class OrderService {
         option.removeStock(requestDto.quantity());
 
         Integer totalPrice = (option.getProduct().getPrice() + option.getPrice()) * requestDto.quantity();
-
         Order order = new Order(option, member, requestDto.quantity(), totalPrice, requestDto.message());
         orderRepository.save(order);
 

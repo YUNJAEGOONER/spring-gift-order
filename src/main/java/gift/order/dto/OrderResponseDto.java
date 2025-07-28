@@ -1,6 +1,5 @@
 package gift.order.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record OrderResponseDto(
@@ -11,6 +10,5 @@ public record OrderResponseDto(
         LocalDateTime orderDateTime,
         String message
 ) {
-
 
 }

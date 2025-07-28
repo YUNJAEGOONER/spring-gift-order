@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,16 +21,17 @@ public class Order {
     Long id;
 
     @OneToOne
-    @JoinColumn(name = "option_id")
+    @JoinColumn(name = "option_id", nullable = false)
     Option option;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     Member member;
 
     @Column(nullable = false)
     Integer quantity;
 
+    @Column(nullable = false)
     Integer price;
 
     @Column(name = "order_date_time", nullable = false)
@@ -39,9 +39,7 @@ public class Order {
 
     String message;
 
-    protected Order() {
-
-    }
+    protected Order() { }
 
     public Long getId() {
         return id;

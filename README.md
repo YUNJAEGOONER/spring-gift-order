@@ -22,5 +22,5 @@
 
 ### 구현 사항
 - [x] Order Entity 설계
-- [ ] Order에 대한 CREATE 기능 구현
+- [x] Order에 대한 CREATE 기능 구현 + 조회 기능 추가 구현
 - [ ] 카카오 API 연동을 통한 메시지 보내기

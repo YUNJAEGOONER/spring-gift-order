@@ -96,6 +96,10 @@
   <div class="order-container">
     <form th:action="@{/view/my/orders}" method="post">
 
+      <input type="hidden" name="wishId" th:value="${orderInfo.wishListId()}">
+      <input type="hidden" name="optionId" th:value="${orderInfo.option.id}">
+      <input type="hidden" name="quantity" th:value="${orderInfo.quantity}">
+
       <!-- 상품 정보 -->
       <div class="section">
         <div class="product-info">
@@ -110,7 +114,6 @@
       <!-- 옵션 정보 -->
       <div class="section">
         <div class="section-title">옵션 정보</div>
-        <input type="hidden" name="optionId" th:value="${orderInfo.option.id}">
         <div class="summary">옵션명: <span th:text="${orderInfo.option.optionName}">기본</span></div>
         <div class="summary">추가 금액: <span th:text="'₩' + ${orderInfo.option.price}">₩0</span></div>
       </div>
@@ -118,7 +121,6 @@
       <!-- 수량 및 총 금액 -->
       <div class="section">
         <div class="section-title">결제 금액</div>
-        <input type="hidden" name="quantity" th:value="${orderInfo.quantity}">
         <div class="summary">수량: <span th:text="${orderInfo.quantity}">1</span></div>
         <div class="summary">총 금액: <span th:text="'₩' + ${orderInfo.price}">₩11,000</span></div>
       </div>

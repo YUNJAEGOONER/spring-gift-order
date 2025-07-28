@@ -8,10 +8,8 @@ import gift.order.dto.OrderResponseDto;
 import gift.order.service.OrderService;
 import gift.wishlist.service.WishListService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,20 +19,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrderController {
 
-    @Autowired private OrderService orderService;
+    private OrderService orderService;
+    private WishListService wishListService;
 
-    @Autowired private WishListService wishListService;
+    public OrderController(OrderService orderService, WishListService wishListService) {
+        this.orderService = orderService;
+        this.wishListService = wishListService;
+    }
 
-    @PostMapping("/orders")
     @Transactional
+    @PostMapping("/orders")
     public OrderResponseDto createOrder(
             @RequestBody OrderRequestDto orderRequestDto,
             @LoggedInMember Member member
     ){
         OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto, member.getMemberId());
-//        if(orderRequestDto.getWishlistId() != null){
-//            wishListService.removeFromWishList(orderRequestDto.getWishlistId());
-//        }
+        if(orderRequestDto.wishId() != null){
+            wishListService.removeFromWishList(orderRequestDto.wishId());
+        }
         return orderResponseDto;
     }
 
@@ -43,10 +45,9 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @GetMapping("/members/{memberId}/orders")
-    public List<OrderDeatilDto> getAllOrders(@LoggedInMember Member member){
+    @GetMapping("/members/orders")
+    public List<OrderDeatilDto> getMyOrders(@LoggedInMember Member member){
         return orderService.getMyOrders(member.getMemberId());
     }
-
 
 }
