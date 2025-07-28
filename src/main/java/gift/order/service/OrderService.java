@@ -1,13 +1,12 @@
 package gift.order.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
 import gift.order.dto.MessageDto;
-import gift.order.dto.OrderDeatilDto;
+import gift.order.dto.OrderDetails;
 import gift.order.dto.OrderRequestDto;
 import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
@@ -31,6 +30,7 @@ public class OrderService {
         this.kakaoApiService = kakaoApiService;
     }
 
+    //주문을 생성하는 기능
     public OrderResponseDto createOrder(OrderRequestDto requestDto, Long memberId) {
         Option option = optionRepository.findOptionById(requestDto.optionId())
                 .orElseThrow(() -> new IllegalStateException("선택한 옵션을 찾을 수 없습니다."));
@@ -45,6 +45,7 @@ public class OrderService {
         Order order = new Order(option, member, requestDto.quantity(), totalPrice, requestDto.message());
         orderRepository.save(order);
 
+        //상품, 주문 정보를 카카오톡 메시지로 전송
         MessageDto messageDto = new MessageDto(
                 option.getProduct().getName(),
                 option.getName(),
@@ -52,7 +53,6 @@ public class OrderService {
                 requestDto.quantity(),
                 totalPrice,
                 requestDto.message());
-
         kakaoApiService.sendMessageToCustomer(member.getMemberId(), messageDto);
 
         return new OrderResponseDto(order.getId(),
@@ -62,8 +62,6 @@ public class OrderService {
                 order.getOrderDateTime(),
                 order.getMessage());
     }
-
-
 
     public List<OrderResponseDto> getOrders(){
         return orderRepository.findAll()
@@ -77,10 +75,10 @@ public class OrderService {
                 .toList();
     }
 
-    public List<OrderDeatilDto> getMyOrders(Long memberId){
+    public List<OrderDetails> getMyOrders(Long memberId){
         return orderRepository.findAllByMemberId(memberId)
                 .stream()
-                .map(order -> new OrderDeatilDto(
+                .map(order -> new OrderDetails(
                         order.getId(),
                         order.getOrderDateTime(),
                         order.getOption().getProduct().getImageUrl(),

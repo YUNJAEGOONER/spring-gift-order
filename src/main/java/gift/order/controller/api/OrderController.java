@@ -1,13 +1,13 @@
 package gift.order.controller.api;
 
 import gift.infra.LoggedInMember;
-import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
-import gift.order.dto.OrderDeatilDto;
+import gift.order.dto.OrderDetails;
 import gift.order.dto.OrderRequestDto;
 import gift.order.dto.OrderResponseDto;
 import gift.order.service.OrderService;
 import gift.wishlist.service.WishListService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +22,6 @@ public class OrderController {
 
     private OrderService orderService;
     private WishListService wishListService;
-    private KakaoApiService kakaoApiService;
 
     public OrderController(OrderService orderService, WishListService wishListService) {
         this.orderService = orderService;
@@ -32,10 +31,11 @@ public class OrderController {
     @Transactional
     @PostMapping("/orders")
     public OrderResponseDto createOrder(
-            @RequestBody OrderRequestDto orderRequestDto,
+            @RequestBody @Valid OrderRequestDto orderRequestDto,
             @LoggedInMember Member member
     ){
         OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto, member.getMemberId());
+        //상품 바로 구매를 하는 경우
         if(orderRequestDto.wishId() != null){
             wishListService.removeFromWishList(orderRequestDto.wishId());
         }
@@ -48,7 +48,7 @@ public class OrderController {
     }
 
     @GetMapping("/members/orders")
-    public List<OrderDeatilDto> getMyOrders(@LoggedInMember Member member){
+    public List<OrderDetails> getMyOrders(@LoggedInMember Member member){
         return orderService.getMyOrders(member.getMemberId());
     }
 

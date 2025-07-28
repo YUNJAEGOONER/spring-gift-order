@@ -1,5 +1,7 @@
 package gift.option.entity;
 
+import gift.exception.ErrorCode;
+import gift.option.exception.StockError;
 import gift.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,19 +38,14 @@ public class Option {
         this.price = price;
     }
 
-    public void addStock(int amount) {
-        quantity += amount;
-    }
-
     public void removeStock(int amount) {
         if(quantity - amount < 0){
-            throw new IllegalStateException("주문한 가능한 수량 초과!");
+            throw new StockError(ErrorCode.UNSUFFICIENT_STOCK);
         }
         quantity -= amount;
     }
 
-    protected Option() {
-    }
+    protected Option() { }
 
     public Option(String name, Integer quantity, Integer price, Product product) {
         this.name = name;

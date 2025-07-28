@@ -3,7 +3,6 @@ package gift.kakaoapi.controller;
 import gift.jwt.JwtAuthService;
 import gift.kakaoapi.dto.UserInfo;
 import gift.kakaoapi.service.KakaoApiService;
-import gift.kakaoapi.tokenmanager.TokenRepository;
 import gift.kakaoapi.tokenmanager.TokenService;
 import gift.member.dto.MemberRequestDto;
 import gift.member.entity.Member;
@@ -14,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class KakaoLoginViewController {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoLoginViewController.class);
-
-    @Value("${kakao.client-id}")
-    private String restApiKey;
-
-    @Value("${kakao.redirect-uri}")
-    private String redirectUri;
 
     private final KakaoApiService kakaoApiService;
     private final MemberService memberService;
@@ -51,11 +43,7 @@ public class KakaoLoginViewController {
     //로그인 화면 불러오기
     @GetMapping("/view/loginform")
     public String kakaoLoginForm(Model model){
-        String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
-                + "&redirect_uri="
-                + redirectUri
-                + "&client_id="
-                + restApiKey;
+        String login_url = kakaoApiService.getLoginLink();
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("login_url", login_url);
         return "/yjshop/user/login";
@@ -64,11 +52,7 @@ public class KakaoLoginViewController {
     //필터예외처리 -> forward (error 메시지를 request에 setAttribute)
     @PostMapping("/view/login/error")
     public String loginError(HttpServletRequest request, Model model){
-        String login_url = "https://kauth.kakao.com/oauth/authorize?response_type=code"
-                + "&redirect_uri="
-                + redirectUri
-                + "&client_id="
-                + restApiKey;
+        String login_url = kakaoApiService.getLoginLink();
         model.addAttribute("errormsg", request.getAttribute("errormsg"));
         model.addAttribute("login_url", login_url);
         return "/yjshop/user/loginerror";
@@ -96,7 +80,7 @@ public class KakaoLoginViewController {
                 .orElseGet(() -> memberService.register(new MemberRequestDto(email, tempPW)));
         String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId(), member.getRole());
 
-        //db에서 카카오 api 엑세스 토큰을 저장
+        //DB에서 카카오 api 엑세스 토큰을 저장(관리)
         tokenService.saveUserToken(member.getMemberId(), accessToken);
 
         //로그인 정보를 바탕으로 JWT를 쿠키를 통해 전달

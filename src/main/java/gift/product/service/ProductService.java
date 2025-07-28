@@ -41,7 +41,13 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductOptionResponseDto findProductOption(Long productId){
         Product product = productRepository.findProductById(productId).orElseThrow(()-> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
-        return new ProductOptionResponseDto(product, product.getOptions());
+        return new ProductOptionResponseDto(
+                product,
+                product.getOptions()
+                        .stream()
+                        .filter(option -> option.getQuantity() > 0)
+                        .toList() //재고가 없는 옵션의 경우 보여주지 않음
+        );
     }
 
     //상품 검색

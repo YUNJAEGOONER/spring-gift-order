@@ -1,20 +1,15 @@
 package gift.kakaoapi.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
 import gift.kakaoapi.tokenmanager.TokenRepository;
-import gift.kakaoapi.tokenmanager.UserToken;
 import gift.order.dto.MessageDto;
 import java.net.URI;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
@@ -29,26 +24,35 @@ public class KakaoApiService {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoApiService.class);
     @Value("${kakao.client-id}")
-    private String REST_API_KEY;
+    private String restApiKey;
 
     @Value("${kakao.redirect-uri}")
-    private String REDIRECT_URI;
+    private String redirectUri;
 
     //스프링 MVC가 제공해주는 외부와의 HTTP 통신 도구
     private final RestTemplate restTemplate;
 
+    private final ObjectMapper objectMapper;
 
+    private final TokenRepository tokenRepository;
 
-    @Autowired  ObjectMapper objectMapper;
-
-    @Autowired TokenRepository tokenRepository;
-
-    public KakaoApiService(RestTemplateBuilder restTemplateBuilder) {
+    public KakaoApiService(ObjectMapper objectMapper, TokenRepository tokenRepository, RestTemplateBuilder restTemplateBuilder) {
+        this.objectMapper = objectMapper;
+        this.tokenRepository = tokenRepository;
         this.restTemplate = restTemplateBuilder
                 .connectTimeout(Duration.ofSeconds(5L))
                 .readTimeout(Duration.ofSeconds(5L))
                 .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
+    }
+
+    //로그인 화면 링크 리턴해주는 메서드
+    public String getLoginLink(){
+        return "https://kauth.kakao.com/oauth/authorize?response_type=code"
+                + "&redirect_uri="
+                + redirectUri
+                + "&client_id="
+                + restApiKey;
     }
 
     public TokenResponseDto getAccessToken(String authorizationCode) {
@@ -62,8 +66,8 @@ public class KakaoApiService {
         //요청 바디
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", REST_API_KEY);
-        body.add("redirect_uri", REDIRECT_URI);
+        body.add("client_id", restApiKey);
+        body.add("redirect_uri", redirectUri);
         body.add("code", authorizationCode);
 
         var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
@@ -89,18 +93,18 @@ public class KakaoApiService {
     }
 
     public void sendMessageToCustomer(Long memberId, MessageDto messageDto){
-
-        log.info("[구매자에게 메세지 보내기]:");
-
+        log.info("[구매자에게 메세지 보내기]");
+        //카카오톡 로그인을 하지 않은 경우에는, 메시지를 보낼 수 없음,,,
         tokenRepository.findUserTokenByMemberId(memberId)
                 .ifPresent(token ->
                 {
                     String url = "https://kapi.kakao.com/v2/api/talk/memo/send";
 
+                    //헤더
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("Authorization", "Bearer " + token.getToken());
 
-                    //요청 바디 - property_keys 파라미터를 사용하면 특정 정보만 지정해 요청할 수 있습니다
+                    //바디
                     LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
                     body.add("template_id", "122830");
                     try {
@@ -112,8 +116,5 @@ public class KakaoApiService {
                     var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
                     restTemplate.postForEntity(url, request, UserInfo.class);
                 });
-
     }
-
-
 }

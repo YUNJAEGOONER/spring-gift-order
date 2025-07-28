@@ -2,7 +2,7 @@ package gift.order.dto;
 
 import java.time.LocalDateTime;
 
-public record OrderDeatilDto(
+public record OrderDetails(
         Long id,
         LocalDateTime orderDateTime,
         String productImage,
