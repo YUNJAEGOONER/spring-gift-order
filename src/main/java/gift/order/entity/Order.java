@@ -32,6 +32,8 @@ public class Order {
     @Column(nullable = false)
     Integer quantity;
 
+    Integer price;
+
     @Column(name = "order_date_time", nullable = false)
     LocalDateTime orderDateTime;
 
@@ -53,6 +55,10 @@ public class Order {
         return member;
     }
 
+    public Integer getPrice() {
+        return price;
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -65,11 +71,12 @@ public class Order {
         return message;
     }
 
-    public Order(Option option, Member member, Integer quantity, String message){
+    public Order(Option option, Member member, Integer quantity, Integer price, String message){
         this.option = option;
         this.member = member;
         this.quantity = quantity;
         this.message = message;
+        this.price = price;
         this.orderDateTime = LocalDateTime.now().withNano(0);
     }
 

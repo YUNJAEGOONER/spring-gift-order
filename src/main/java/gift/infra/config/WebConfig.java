@@ -26,12 +26,12 @@ public class WebConfig implements WebMvcConfigurer {
         this.loggedInMemberArgumentResolver = loggedInMemberArgumentResolver;
     }
 
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginCheckInterceptor)
-                .addPathPatterns("/view/my/**", "/api/wishlist/**");
-        registry.addInterceptor(adminCheckInterceptor)
-                .addPathPatterns("/view/admin/**");
-    }
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(loginCheckInterceptor)
+//                .addPathPatterns("/view/my/**", "/api/wishlist/**");
+//        registry.addInterceptor(adminCheckInterceptor)
+//                .addPathPatterns("/view/admin/**");
+//    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

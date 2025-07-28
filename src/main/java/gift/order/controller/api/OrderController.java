@@ -1,6 +1,8 @@
 package gift.order.controller.api;
 
 import gift.infra.LoggedInMember;
+import gift.member.entity.Member;
+import gift.order.dto.OrderDeatilDto;
 import gift.order.dto.OrderRequestDto;
 import gift.order.dto.OrderResponseDto;
 import gift.order.service.OrderService;
@@ -25,11 +27,14 @@ public class OrderController {
 
     @PostMapping("/orders")
     @Transactional
-    public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto){
-        OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto);
-        if(orderRequestDto.getWishlistId() != null){
-            wishListService.removeFromWishList(orderRequestDto.getWishlistId());
-        }
+    public OrderResponseDto createOrder(
+            @RequestBody OrderRequestDto orderRequestDto,
+            @LoggedInMember Member member
+    ){
+        OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto, member.getMemberId());
+//        if(orderRequestDto.getWishlistId() != null){
+//            wishListService.removeFromWishList(orderRequestDto.getWishlistId());
+//        }
         return orderResponseDto;
     }
 
@@ -39,8 +44,8 @@ public class OrderController {
     }
 
     @GetMapping("/members/{memberId}/orders")
-    public List<OrderResponseDto> getAllOrders(@PathVariable Long memberId){
-        return orderService.getMyOrders(memberId);
+    public List<OrderDeatilDto> getAllOrders(@LoggedInMember Member member){
+        return orderService.getMyOrders(member.getMemberId());
     }
 
 

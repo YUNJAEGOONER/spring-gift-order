@@ -41,9 +41,6 @@ public class Option {
     }
 
     public void removeStock(int amount) {
-        System.out.println("quantity = " + quantity);
-        System.out.println("amount = " + amount);
-
         if(quantity - amount < 0){
             throw new IllegalStateException("주문한 가능한 수량 초과!");
         }

@@ -42,10 +42,11 @@ create table wishlist
 create table orders
 (
     id              bigint auto_increment,
-    member_id       bigint not null,
-    option_id       bigint not null,
-    quantity        int    not null,
-    order_date_time datetime   not null,
+    member_id       bigint   not null,
+    option_id       bigint   not null,
+    price           int      not null,
+    quantity        int      not null,
+    order_date_time datetime not null,
     message         varchar(500),
     primary key (id),
     foreign key (member_id) references member (id),

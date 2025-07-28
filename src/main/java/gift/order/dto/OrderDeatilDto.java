@@ -1,14 +1,15 @@
 package gift.order.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record OrderResponseDto(
+public record OrderDeatilDto(
         Long id,
-        Long optionId,
+        LocalDateTime orderDateTime,
+        String productImage,
+        String productName,
+        String optionName,
         Integer quantity,
         Integer price,
-        LocalDateTime orderDateTime,
         String message
 ) {
 
