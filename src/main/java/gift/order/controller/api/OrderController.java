@@ -51,14 +51,14 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @GetMapping("/members/orders")
+    @GetMapping("/orders/members")
     public List<OrderDetails> getMyOrders(@LoggedInMember Member member){
         return orderService.getMyOrders(member.getMemberId());
     }
 
     @ExceptionHandler(MyException.class)
     public ResponseEntity<String> MyExceptionHandler(MyException e){
-        return ResponseEntity.badRequest().body(e.getErrorCode().getMessage());
+        return new ResponseEntity(e.getErrorCode().getMessage(), e.getErrorCode().getStatusCode());
     }
 
 }

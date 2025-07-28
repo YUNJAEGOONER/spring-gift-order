@@ -13,8 +13,10 @@ import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class OrderService {
 
     private final OptionRepository optionRepository;
@@ -55,7 +57,9 @@ public class OrderService {
                 requestDto.message());
         kakaoApiService.sendMessageToCustomer(member.getMemberId(), messageDto);
 
-        return new OrderResponseDto(order.getId(),
+        return new OrderResponseDto(
+                order.getId(),
+                order.getMember().getMemberId(),
                 order.getOption().getId(),
                 order.getQuantity(),
                 order.getPrice(),
@@ -66,7 +70,9 @@ public class OrderService {
     public List<OrderResponseDto> getOrders(){
         return orderRepository.findAll()
                 .stream()
-                .map(order -> new OrderResponseDto(order.getId(),
+                .map(order -> new OrderResponseDto(
+                        order.getId(),
+                        order.getMember().getMemberId(),
                         order.getOption().getId(),
                         order.getQuantity(),
                         order.getPrice(),

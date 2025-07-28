@@ -20,9 +20,9 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(JWTAuthException.class)
-    public String satustUnauthorizedHandler(JWTAuthException e, HttpServletResponse response) {
+    public String satusUnauthorizedHandler(JWTAuthException e, HttpServletResponse response) {
         log.info(e.getErrorCode().getMessage());
-        Cookie cookie = new Cookie("toke", null);
+        Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return "redirect:/view/loginform";
