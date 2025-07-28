@@ -1,5 +1,6 @@
 package gift.order.controller.api;
 
+import gift.exception.MyException;
 import gift.infra.LoggedInMember;
 import gift.member.entity.Member;
 import gift.order.dto.OrderDetails;
@@ -9,7 +10,10 @@ import gift.order.service.OrderService;
 import gift.wishlist.service.WishListService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +34,7 @@ public class OrderController {
 
     @Transactional
     @PostMapping("/orders")
-    public OrderResponseDto createOrder(
+    public ResponseEntity<OrderResponseDto> createOrder(
             @RequestBody @Valid OrderRequestDto orderRequestDto,
             @LoggedInMember Member member
     ){
@@ -39,7 +43,7 @@ public class OrderController {
         if(orderRequestDto.wishId() != null){
             wishListService.removeFromWishList(orderRequestDto.wishId());
         }
-        return orderResponseDto;
+        return new ResponseEntity<>(orderResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/orders")
@@ -50,6 +54,11 @@ public class OrderController {
     @GetMapping("/members/orders")
     public List<OrderDetails> getMyOrders(@LoggedInMember Member member){
         return orderService.getMyOrders(member.getMemberId());
+    }
+
+    @ExceptionHandler(MyException.class)
+    public ResponseEntity<String> MyExceptionHandler(MyException e){
+        return ResponseEntity.badRequest().body(e.getErrorCode().getMessage());
     }
 
 }
