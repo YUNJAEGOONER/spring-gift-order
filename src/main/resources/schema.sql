@@ -52,3 +52,12 @@ create table orders
     foreign key (member_id) references member (id),
     foreign key (option_id) references option (id)
 );
+
+create table user_token
+(
+    id        bigint auto_increment,
+    member_id bigint       not null,
+    token     varchar(255) not null,
+    primary key (id),
+    foreign key (member_id) references member (id)
+);

@@ -1,11 +1,20 @@
 package gift.kakaoapi.service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
+import gift.kakaoapi.tokenmanager.TokenRepository;
+import gift.kakaoapi.tokenmanager.UserToken;
+import gift.order.dto.MessageDto;
 import java.net.URI;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
@@ -16,9 +25,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class KakaoLoginService {
+public class KakaoApiService {
 
-    private static final Logger log = LoggerFactory.getLogger(KakaoLoginService.class);
+    private static final Logger log = LoggerFactory.getLogger(KakaoApiService.class);
     @Value("${kakao.client-id}")
     private String REST_API_KEY;
 
@@ -28,7 +37,13 @@ public class KakaoLoginService {
     //스프링 MVC가 제공해주는 외부와의 HTTP 통신 도구
     private final RestTemplate restTemplate;
 
-    public KakaoLoginService(RestTemplateBuilder restTemplateBuilder) {
+
+
+    @Autowired  ObjectMapper objectMapper;
+
+    @Autowired TokenRepository tokenRepository;
+
+    public KakaoApiService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder
                 .connectTimeout(Duration.ofSeconds(5L))
                 .readTimeout(Duration.ofSeconds(5L))
@@ -55,13 +70,14 @@ public class KakaoLoginService {
         return restTemplate.postForEntity(url, request, TokenResponseDto.class).getBody();
     }
 
-    public UserInfo getUserInfo(String authorizationCode) {
+
+    public UserInfo getUserInfo(String accessToken) {
         log.info("[step3:사용자 로그인 처리]: 사용자 정보 가져오기");
         String url = "https://kapi.kakao.com/v2/user/me";
 
         //요청 헤더
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + authorizationCode);
+        headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         //요청 바디 - property_keys 파라미터를 사용하면 특정 정보만 지정해 요청할 수 있습니다
@@ -71,4 +87,33 @@ public class KakaoLoginService {
         var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
         return restTemplate.postForEntity(url, request, UserInfo.class).getBody();
     }
+
+    public void sendMessageToCustomer(Long memberId, MessageDto messageDto){
+
+        log.info("[구매자에게 메세지 보내기]:");
+
+        tokenRepository.findUserTokenByMemberId(memberId)
+                .ifPresent(token ->
+                {
+                    String url = "https://kapi.kakao.com/v2/api/talk/memo/send";
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Authorization", "Bearer " + token.getToken());
+
+                    //요청 바디 - property_keys 파라미터를 사용하면 특정 정보만 지정해 요청할 수 있습니다
+                    LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+                    body.add("template_id", "122830");
+                    try {
+                        body.add("template_args",objectMapper.writeValueAsString(messageDto));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
+                    restTemplate.postForEntity(url, request, UserInfo.class);
+                });
+
+    }
+
+
 }

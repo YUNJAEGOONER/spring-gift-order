@@ -20,8 +20,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-@RestClientTest(value = KakaoLoginService.class)
-class KakaoLoginServiceTest {
+@RestClientTest(value = KakaoApiService.class)
+class KakaoApiServiceTest {
 
     @Autowired
     private MockRestServiceServer server;
@@ -30,7 +30,7 @@ class KakaoLoginServiceTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private KakaoLoginService kakaoLoginService;
+    private KakaoApiService kakaoApiService;
 
     @BeforeEach
     void setUp(){
@@ -48,7 +48,7 @@ class KakaoLoginServiceTest {
                 .andRespond(withSuccess(objectMapper.writeValueAsBytes(fakeToken), MediaType.APPLICATION_JSON));
 
         //when
-        TokenResponseDto token = kakaoLoginService.getAccessToken("iamAuthorizationCode");
+        TokenResponseDto token = kakaoApiService.getAccessToken("iamAuthorizationCode");
 
         //then
         assertThat(token.accessToken()).isEqualTo(fakeToken.accessToken());
@@ -75,7 +75,7 @@ class KakaoLoginServiceTest {
                 .andRespond(withSuccess(objectMapper.writeValueAsBytes(response), MediaType.APPLICATION_JSON));
 
         //when
-        UserInfo userInfo = kakaoLoginService.getUserInfo("iAmAnAuthorizationCode");
+        UserInfo userInfo = kakaoApiService.getUserInfo("iAmAnAuthorizationCode");
 
         //then
         assertThat(userInfo.getId()).isEqualTo(fakeId);

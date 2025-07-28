@@ -1,6 +1,7 @@
 package gift.order.controller.api;
 
 import gift.infra.LoggedInMember;
+import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
 import gift.order.dto.OrderDeatilDto;
 import gift.order.dto.OrderRequestDto;
@@ -21,6 +22,7 @@ public class OrderController {
 
     private OrderService orderService;
     private WishListService wishListService;
+    private KakaoApiService kakaoApiService;
 
     public OrderController(OrderService orderService, WishListService wishListService) {
         this.orderService = orderService;

@@ -37,7 +37,7 @@ insert into product(id, name, price, image_url)
 values (9997L, '애플워치', 123000,
         'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQFcxc2JlxNMqqmlpX3_D6hC5ITnTDEZmytNsgR6K3jnwTF5G_Lk3LJ1xivRZz9yWLh3Tmlw3nN');
 insert into option(name, quantity, price, product_id)
-values ('41mmm', 999, 50000, 9997L),
+values ('41mm', 999, 50000, 9997L),
        ('44mm', 999, 200000, 9997L);
 
 -- 맥북프로

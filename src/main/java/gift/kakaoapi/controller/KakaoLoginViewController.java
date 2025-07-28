@@ -2,7 +2,9 @@ package gift.kakaoapi.controller;
 
 import gift.jwt.JwtAuthService;
 import gift.kakaoapi.dto.UserInfo;
-import gift.kakaoapi.service.KakaoLoginService;
+import gift.kakaoapi.service.KakaoApiService;
+import gift.kakaoapi.tokenmanager.TokenRepository;
+import gift.kakaoapi.tokenmanager.TokenService;
 import gift.member.dto.MemberRequestDto;
 import gift.member.entity.Member;
 import gift.member.service.MemberService;
@@ -30,18 +32,20 @@ public class KakaoLoginViewController {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
-    private final KakaoLoginService kakaoLoginService;
+    private final KakaoApiService kakaoApiService;
     private final MemberService memberService;
     private final JwtAuthService jwtAuthService;
+    private final TokenService tokenService;
 
     public KakaoLoginViewController(
-            KakaoLoginService kakaoLoginService,
+            KakaoApiService kakaoApiService,
             MemberService memberService,
-            JwtAuthService jwtAuthService
+            JwtAuthService jwtAuthService, TokenService tokenService
     ) {
-        this.kakaoLoginService = kakaoLoginService;
+        this.kakaoApiService = kakaoApiService;
         this.memberService = memberService;
         this.jwtAuthService = jwtAuthService;
+        this.tokenService = tokenService;
     }
 
     //로그인 화면 불러오기
@@ -78,9 +82,10 @@ public class KakaoLoginViewController {
     ){
         log.info("[step1:인가 코드] 카카오 로그인 =  " + authorizationCode);
 
-        String accessToken = kakaoLoginService.getAccessToken(authorizationCode).accessToken();
+        String accessToken = kakaoApiService.getAccessToken(authorizationCode).accessToken();
+
         //accessToken을 기반으로 사용자 정보 가져오기
-        UserInfo userInfo = kakaoLoginService.getUserInfo(accessToken);
+        UserInfo userInfo = kakaoApiService.getUserInfo(accessToken);
 
         String email = userInfo.getKakaoAccount().getEmail();
         String tempPW = userInfo.getId() + LocalDate.now();
@@ -90,6 +95,9 @@ public class KakaoLoginViewController {
         Member member = memberService.getMemberByEmail(email)
                 .orElseGet(() -> memberService.register(new MemberRequestDto(email, tempPW)));
         String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId(), member.getRole());
+
+        //db에서 카카오 api 엑세스 토큰을 저장
+        tokenService.saveUserToken(member.getMemberId(), accessToken);
 
         //로그인 정보를 바탕으로 JWT를 쿠키를 통해 전달
         Cookie tcookie = new Cookie("token", token);
