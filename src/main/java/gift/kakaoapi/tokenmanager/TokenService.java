@@ -4,14 +4,18 @@ import gift.exception.ErrorCode;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
 
-    @Autowired TokenRepository tokenRepository;
-    @Autowired MemberRepository memberRepository;
+    private final TokenRepository tokenRepository;
+    private final MemberRepository memberRepository;
+
+    public TokenService(TokenRepository tokenRepository, MemberRepository memberRepository) {
+        this.tokenRepository = tokenRepository;
+        this.memberRepository = memberRepository;
+    }
 
     public void saveUserToken(Long memberId, String accessToken){
         Member member = memberRepository.findMemberById(memberId).orElseThrow(

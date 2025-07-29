@@ -67,6 +67,7 @@ public class OrderService {
                 order.getMessage());
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponseDto> getOrders(){
         return orderRepository.findAll()
                 .stream()
@@ -81,6 +82,7 @@ public class OrderService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<OrderDetails> getMyOrders(Long memberId){
         return orderRepository.findAllByMemberId(memberId)
                 .stream()
