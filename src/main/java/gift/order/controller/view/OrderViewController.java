@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,9 +50,9 @@ public class OrderViewController {
     //결제 정보창을 가져오기 위한 메서드
     @GetMapping("/orders/payment")
     public String getPayment(
-            @RequestParam(required = false) @NotNull(message = "옵션을 선택해 주세요") Long optionId,
+            @RequestParam Long optionId,
             @RequestParam(required = false) Long wishListId,
-            @RequestParam @Min(value = 1, message = "구매 수량은 1개 이상이어야 합니다.") @NotNull(message = "구매 수량을 입력해주세요") Integer quantity,
+            @RequestParam @Min(value = 1, message = "구매 수량은 1개 이상이어야 합니다.") Integer quantity,
             Model model
     ){
         OptionResponseDto option = optionService.findOne(optionId);
