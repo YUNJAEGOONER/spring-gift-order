@@ -18,6 +18,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class KakaoApiService {
@@ -48,11 +49,12 @@ public class KakaoApiService {
 
     //로그인 화면 링크 리턴해주는 메서드
     public String getLoginLink(){
-        return "https://kauth.kakao.com/oauth/authorize?response_type=code"
-                + "&redirect_uri="
-                + redirectUri
-                + "&client_id="
-                + restApiKey;
+        String url = "https://kauth.kakao.com/oauth/authorize?response_type=code";
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromUriString(url)
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("client_id", restApiKey);
+        return builder.build().toUriString();
     }
 
     public TokenResponseDto getAccessToken(String authorizationCode) {
