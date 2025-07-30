@@ -18,26 +18,26 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "option_id", nullable = false)
-    Option option;
+    private Option option;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    Member member;
+    private Member member;
 
     @Column(nullable = false)
-    Integer quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
-    Integer totalPrice;
+    private Integer totalPrice;
 
     @Column(name = "order_date_time", nullable = false)
-    LocalDateTime orderDateTime;
+    private LocalDateTime orderDateTime;
 
-    String message;
+    private String message;
 
     public Order(Option option, Member member, Integer quantity, String message){
         this.option = option;
