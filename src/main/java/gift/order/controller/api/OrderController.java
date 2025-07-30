@@ -47,13 +47,13 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<OrderResponseDto> getAllOrders(){
-        return orderService.getOrders();
+    public ResponseEntity<List<OrderResponseDto>> getAllOrders(){
+        return ResponseEntity.ok(orderService.getOrders());
     }
 
     @GetMapping("/orders/members")
-    public List<OrderDetails> getMyOrders(@LoggedInMember Member member){
-        return orderService.getMyOrders(member.getMemberId());
+    public ResponseEntity<List<OrderDetails>> getMyOrders(@LoggedInMember Member member){
+        return ResponseEntity.ok(orderService.getMyOrders(member.getMemberId()));
     }
 
     @ExceptionHandler(MyException.class)
