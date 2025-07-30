@@ -27,7 +27,7 @@ class OrderControllerTest {
     private RestClient restClient = RestClient.builder().build();
 
 
-    String createMemberAndGetToken(String email, String pw){
+    private String createMemberAndGetToken(String email, String pw){
         var url = "http://localhost:" + port + "/api/members/register";
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, pw);
         var response = restClient.post()

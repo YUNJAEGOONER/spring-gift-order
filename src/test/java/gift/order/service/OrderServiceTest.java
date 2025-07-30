@@ -58,7 +58,7 @@ class OrderServiceTest {
         Product product = new Product("Iphone16", 1250000, "iphone_image");
         Member member = new Member("test@test.com", "password");
         Option option = new Option("256GB", 100, 150000, product);
-        Order order = new Order(option, member, requestDto.quantity(), product.getPrice() + option.getPrice(), requestDto.message());
+        Order order = new Order(option, member, requestDto.quantity(), requestDto.message());
 
         given(optionRepository.findOptionById(any())).willReturn(Optional.of(option));
         given(memberRepository.findMemberById(any())).willReturn(Optional.of(member));
@@ -72,7 +72,7 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(responseDto.message()).isEqualTo(requestDto.message()),
                 () -> assertThat(responseDto.quantity()).isEqualTo(responseDto.quantity()),
-                () -> assertThat(responseDto.price()).isEqualTo((product.getPrice() + option.getPrice()) * responseDto.quantity())
+                () -> assertThat(responseDto.price()).isEqualTo(option.calculateSalePrice() * responseDto.quantity())
         );
 
     }
@@ -86,7 +86,7 @@ class OrderServiceTest {
         Product product = new Product("Iphone16", 1250000, "iphone_image");
         Member member = new Member("test@test.com", "password");
         Option option = new Option("256GB", 3, 150000, product);
-        Order order = new Order(option, member, requestDto.quantity(), product.getPrice() + option.getPrice(), requestDto.message());
+        Order order = new Order(option, member, requestDto.quantity(), requestDto.message());
 
         given(optionRepository.findOptionById(any())).willReturn(Optional.of(option));
         given(memberRepository.findMemberById(any())).willReturn(Optional.of(member));
@@ -109,8 +109,8 @@ class OrderServiceTest {
         Option option = new Option("256GB", 999, 150000, product);
 
         List<Order> orders = new ArrayList<>();
-        orders.add(new Order(option, member, 2, product.getPrice() + option.getPrice(), "이것도 선물이야"));
-        orders.add(new Order(option, member, 3, product.getPrice() + option.getPrice(), "야 가져"));
+        orders.add(new Order(option, member, 2,  "이것도 선물이야"));
+        orders.add(new Order(option, member, 3,  "야 가져"));
 
         given(orderRepository.findAllByMemberId(memberId)).willReturn(orders);
 

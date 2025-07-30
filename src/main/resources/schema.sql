@@ -44,7 +44,7 @@ create table orders
     id              bigint auto_increment,
     member_id       bigint   not null,
     option_id       bigint   not null,
-    price           int      not null,
+    total_price           int      not null,
     quantity        int      not null,
     order_date_time datetime not null,
     message         varchar(500),

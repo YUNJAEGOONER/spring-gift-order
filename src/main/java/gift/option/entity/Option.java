@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Option {
@@ -32,6 +33,19 @@ public class Option {
     @JoinColumn(name = "product_id") //name_of_FK
     private Product product;
 
+    protected Option() { }
+
+    public Option(String name, Integer quantity, Integer price, Product product) {
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+        this.product = product;
+    }
+
+    public Integer calculateSalePrice() {
+        return this.product.getPrice() + price;
+    }
+
     public void changeOption(String name, Integer quantity, Integer price) {
         this.name = name;
         this.quantity = quantity;
@@ -45,17 +59,12 @@ public class Option {
         quantity -= amount;
     }
 
-    protected Option() { }
-
-    public Option(String name, Integer quantity, Integer price, Product product) {
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
-        this.product = product;
-    }
-
     public Long getId() {
         return Id;
+    }
+
+    public Integer getPrice() {
+        return price;
     }
 
     public String getName() {
@@ -64,10 +73,6 @@ public class Option {
 
     public Integer getQuantity() {
         return quantity;
-    }
-
-    public Integer getPrice() {
-        return price;
     }
 
     public Product getProduct() {
@@ -89,5 +94,4 @@ public class Option {
             product.addOption(this); //반대편 연관관계 설정
         }
     }
-
 }

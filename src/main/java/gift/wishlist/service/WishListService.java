@@ -50,7 +50,7 @@ public class WishListService {
 
     public WishResponseDto toWishResponseDto(WishList wishList, Option option){
         Product product = option.getProduct();
-        Integer totalPrice = wishList.getQuantity() * (option.getPrice() + product.getPrice());
+        Integer totalPrice = wishList.getQuantity() * option.calculateSalePrice();
         return new WishResponseDto(
                 wishList.getId(),
                 option.getId(),
@@ -74,7 +74,7 @@ public class WishListService {
                         wishList.getOption().getName(),
                         wishList.getOption().getProduct().getImageUrl(),
                         wishList.getQuantity(),
-                        wishList.getQuantity() * (wishList.getOption().getProduct().getPrice() + wishList.getOption().getPrice()))
+                        wishList.getQuantity() * wishList.getOption().calculateSalePrice())
         );
     }
 

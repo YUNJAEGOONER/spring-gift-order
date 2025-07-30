@@ -32,12 +32,25 @@ public class Order {
     Integer quantity;
 
     @Column(nullable = false)
-    Integer price;
+    Integer totalPrice;
 
     @Column(name = "order_date_time", nullable = false)
     LocalDateTime orderDateTime;
 
     String message;
+
+    public Order(Option option, Member member, Integer quantity, String message){
+        this.option = option;
+        this.member = member;
+        this.quantity = quantity;
+        this.message = message;
+        this.orderDateTime = LocalDateTime.now().withNano(0);
+        this.totalPrice = calculateTotalPrice(option.calculateSalePrice(), quantity);
+    }
+
+    private Integer calculateTotalPrice(Integer salePrice, Integer quantity){
+        return salePrice * quantity;
+    }
 
     protected Order() { }
 
@@ -53,10 +66,6 @@ public class Order {
         return member;
     }
 
-    public Integer getPrice() {
-        return price;
-    }
-
     public Integer getQuantity() {
         return quantity;
     }
@@ -69,13 +78,8 @@ public class Order {
         return message;
     }
 
-    public Order(Option option, Member member, Integer quantity, Integer price, String message){
-        this.option = option;
-        this.member = member;
-        this.quantity = quantity;
-        this.message = message;
-        this.price = price;
-        this.orderDateTime = LocalDateTime.now().withNano(0);
+    public Integer getTotalPrice() {
+        return totalPrice;
     }
 
 }

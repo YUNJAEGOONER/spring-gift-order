@@ -41,19 +41,16 @@ public class OrderService {
                 .orElseThrow(()  -> new IllegalStateException("회원가입 후에 주문을 할 수 있습니다."));
 
         option.removeStock(requestDto.quantity());
-
-        Integer productPrice = option.getProduct().getPrice() + option.getPrice();
-        Integer totalPrice = productPrice * requestDto.quantity();
-        Order order = new Order(option, member, requestDto.quantity(), totalPrice, requestDto.message());
+        Order order = new Order(option, member, requestDto.quantity(), requestDto.message());
         orderRepository.save(order);
 
         //상품, 주문 정보를 카카오톡 메시지로 전송
         MessageDto messageDto = new MessageDto(
                 option.getProduct().getName(),
                 option.getName(),
-                productPrice,
+                option.calculateSalePrice(),
                 requestDto.quantity(),
-                totalPrice,
+                order.getTotalPrice(),
                 requestDto.message());
         kakaoApiService.sendMessageToCustomer(member.getMemberId(), messageDto);
 
@@ -62,7 +59,7 @@ public class OrderService {
                 order.getMember().getMemberId(),
                 order.getOption().getId(),
                 order.getQuantity(),
-                order.getPrice(),
+                order.getTotalPrice(),
                 order.getOrderDateTime(),
                 order.getMessage());
     }
@@ -76,7 +73,7 @@ public class OrderService {
                         order.getMember().getMemberId(),
                         order.getOption().getId(),
                         order.getQuantity(),
-                        order.getPrice(),
+                        order.getTotalPrice(),
                         order.getOrderDateTime(),
                         order.getMessage()))
                 .toList();
@@ -93,7 +90,7 @@ public class OrderService {
                         order.getOption().getProduct().getName(),
                         order.getOption().getName(),
                         order.getQuantity(),
-                        order.getPrice(),
+                        order.getTotalPrice(),
                         order.getMessage()))
                 .toList();
     }
