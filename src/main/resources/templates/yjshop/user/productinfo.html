@@ -142,7 +142,7 @@
         </form>
 
         <!-- 바로 구매하기 -->
-        <form th:action="@{/view/my/payment}" method="get" onsubmit="return setHiddenValues(this)">
+        <form th:action="@{/view/my/orders/payment}" method="get" onsubmit="return setHiddenValues(this)">
           <input type="hidden" name="optionId">
           <input type="hidden" name="quantity">
           <button type="submit" class="btn-buy">바로 구매하기</button>

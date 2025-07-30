@@ -4,10 +4,14 @@ import gift.exception.page.PageIndexException;
 import gift.jwt.exception.JWTAuthException;
 import gift.jwt.exception.LoginError;
 import gift.member.exception.MemberNotFoundException;
+import gift.option.exception.StockError;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -17,9 +21,9 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(JWTAuthException.class)
-    public String satustUnauthorizedHandler(JWTAuthException e, HttpServletResponse response) {
+    public String statusUnauthorizedHandler(JWTAuthException e, HttpServletResponse response) {
         log.info(e.getErrorCode().getMessage());
-        Cookie cookie = new Cookie("toke", null);
+        Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return "redirect:/view/loginform";
@@ -31,16 +35,35 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public String satustUnauthorizedHandler(MemberNotFoundException e, HttpServletResponse response) {
+    public String statusUnauthorizedHandler(MemberNotFoundException e) {
         log.info(e.getErrorCode().getMessage());
         return "redirect:/view/loginform";
     }
 
     @ExceptionHandler(PageIndexException.class)
-    public String satustUnauthorizedHandler(PageIndexException e, HttpServletResponse response) {
+    public String statusUnauthorizedHandler(PageIndexException e, HttpServletResponse response) {
         log.info(e.getErrorCode().getMessage());
         return "redirect:/view/products/list";
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public String ExceptionHandler(MissingServletRequestParameterException e, HttpServletRequest request){
+        log.info(e.getParameterName() + e.getMessage());
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
+    }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String constraintViolationHandler(ConstraintViolationException e,HttpServletRequest request){
+        log.info(e.getMessage());
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
+    }
+
+    @ExceptionHandler(StockError.class)
+    public String constraintViolationHandler(StockError e,HttpServletRequest request){
+        log.info(e.getErrorCode().getMessage());
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
+    }
 }

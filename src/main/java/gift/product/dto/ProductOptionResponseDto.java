@@ -28,6 +28,7 @@ public class ProductOptionResponseDto {
         this.options = optionList.stream().map(
                 option -> new OptionResponseDto(
                         option.getId(),
+                        option.getProduct().getId(),
                         option.getName(),
                         option.getQuantity(),
                         option.getPrice()

@@ -1,6 +1,7 @@
 package gift.wishlist.service;
 
 import gift.exception.ErrorCode;
+import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
@@ -28,7 +29,8 @@ public class WishListService {
     private final OptionRepository optionRepository;
     private final MemberRepository memberRepository;
 
-    public WishListService(WishListRepository wishListRepository, OptionRepository optionRepository, MemberRepository memberRepository) {
+    public WishListService(WishListRepository wishListRepository, OptionRepository optionRepository, MemberRepository memberRepository,
+            KakaoApiService kakaoApiService) {
         this.wishListRepository = wishListRepository;
         this.optionRepository = optionRepository;
         this.memberRepository = memberRepository;
@@ -50,7 +52,7 @@ public class WishListService {
 
     public WishResponseDto toWishResponseDto(WishList wishList, Option option){
         Product product = option.getProduct();
-        Integer totalPrice = wishList.getQuantity() * (option.getPrice() + product.getPrice());
+        Integer totalPrice = wishList.getQuantity() * option.calculateSalePrice();
         return new WishResponseDto(
                 wishList.getId(),
                 option.getId(),
@@ -74,7 +76,7 @@ public class WishListService {
                         wishList.getOption().getName(),
                         wishList.getOption().getProduct().getImageUrl(),
                         wishList.getQuantity(),
-                        wishList.getQuantity() * (wishList.getOption().getProduct().getPrice() + wishList.getOption().getPrice()))
+                        wishList.getQuantity() * wishList.getOption().calculateSalePrice())
         );
     }
 

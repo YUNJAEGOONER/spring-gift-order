@@ -38,3 +38,26 @@ create table wishlist
     foreign key (option_id) references option (id),
     foreign key (member_id) references member (id)
 );
+
+create table orders
+(
+    id              bigint auto_increment,
+    member_id       bigint   not null,
+    option_id       bigint   not null,
+    total_price           int      not null,
+    quantity        int      not null,
+    order_date_time datetime not null,
+    message         varchar(500),
+    primary key (id),
+    foreign key (member_id) references member (id),
+    foreign key (option_id) references option (id)
+);
+
+create table kakao_token
+(
+    id        bigint auto_increment,
+    member_id bigint       not null,
+    token     varchar(255) not null,
+    primary key (id),
+    foreign key (member_id) references member (id)
+);

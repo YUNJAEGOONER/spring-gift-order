@@ -172,7 +172,10 @@
         <form th:action="@{/view/my/wishlist/subtract/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
           <button type="submit">-</button>
         </form>
-        <form th:action="@{/view/my/payment}" method="get">
+        <form th:action="@{/view/my/orders/payment}" method="get">
+          <input type="hidden" name="wishListId" th:value="${responseDto.wishListId()}" />
+          <input type="hidden" name="optionId" th:value="${responseDto.optionId()}" />
+          <input type="hidden" name="quantity" th:value="${responseDto.quantity()}" />
           <button type="submit">바로 구매</button>
         </form>
         <form th:action="@{/view/my/wishlist/delete/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">

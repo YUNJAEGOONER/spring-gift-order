@@ -11,7 +11,6 @@ import gift.option.repository.OptionRepository;
 import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,6 @@ public class OptionService {
                     throw new UnavailableOptionName(ErrorCode.UNAVAILABLE_OPTION_NAME);
                 });
 
-
         Option option = optionRepository.save(new Option(requestDto.getName(), requestDto.getQuantity(), requestDto.getPrice(), product));
 
         //연관관계 편의 메서드
@@ -48,31 +46,23 @@ public class OptionService {
 
         return new OptionResponseDto(
                 option.getId(),
+                option.getProduct().getId(),
                 option.getName(),
                 option.getQuantity(),
                 option.getPrice());
     }
 
     @Transactional(readOnly = true)
-    public List<OptionResponseDto> getOptionByProduct(Long productId) {
-        Product product = productRepository.findProductById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
-        return optionRepository.findOptionByProduct_Id(product.getId())
-                .stream()
-                .map(productOption -> new OptionResponseDto(
-                        productOption.getId(),
-                        productOption.getName(),
-                        productOption.getQuantity(),
-                        productOption.getPrice()))
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
     public OptionResponseDto findOne(Long optionId) {
         Option option = optionRepository.findOptionById(optionId)
                 .orElseThrow(() -> new OptionNotFound(ErrorCode.OPTION_NOT_FOUND));
-        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity(),
-                option.getPrice());
+        return new OptionResponseDto(
+                option.getId(),
+                option.getProduct().getId(),
+                option.getName(),
+                option.getQuantity(),
+                option.getPrice()
+        );
     }
 
     public OptionResponseDto updateOption(Long optionId, OptionRequestDto requestDto) {
@@ -83,7 +73,7 @@ public class OptionService {
                 .ifPresent(op-> {throw new UnavailableOptionName(ErrorCode.UNAVAILABLE_OPTION_NAME);});
         checkOptionPrice(option.getProduct().getPrice(), requestDto.getPrice());
         option.changeOption(requestDto.getName(), requestDto.getQuantity(), requestDto.getPrice());
-        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity(), option.getPrice());
+        return new OptionResponseDto(option.getId(), option.getProduct().getId(), option.getName(), option.getQuantity(), option.getPrice());
     }
 
     @Transactional

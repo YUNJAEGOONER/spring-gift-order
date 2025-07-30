@@ -1,5 +1,7 @@
 package gift.option.entity;
 
+import gift.exception.ErrorCode;
+import gift.option.exception.StockError;
 import gift.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,22 +32,7 @@ public class Option {
     @JoinColumn(name = "product_id") //name_of_FK
     private Product product;
 
-    public void changeOption(String name, Integer quantity, Integer price) {
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
-    }
-
-    public void addStock(int amount) {
-        quantity += amount;
-    }
-
-    public void removeStock(int amount) {
-        quantity -= amount;
-    }
-
-    protected Option() {
-    }
+    protected Option() { }
 
     public Option(String name, Integer quantity, Integer price, Product product) {
         this.name = name;
@@ -54,8 +41,29 @@ public class Option {
         this.product = product;
     }
 
+    public Integer calculateSalePrice() {
+        return this.product.getPrice() + price;
+    }
+
+    public void changeOption(String name, Integer quantity, Integer price) {
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    public void removeStock(int amount) {
+        if(quantity - amount < 0){
+            throw new StockError(ErrorCode.UNSUFFICIENT_STOCK);
+        }
+        quantity -= amount;
+    }
+
     public Long getId() {
         return Id;
+    }
+
+    public Integer getPrice() {
+        return price;
     }
 
     public String getName() {
@@ -64,10 +72,6 @@ public class Option {
 
     public Integer getQuantity() {
         return quantity;
-    }
-
-    public Integer getPrice() {
-        return price;
     }
 
     public Product getProduct() {
@@ -89,5 +93,4 @@ public class Option {
             product.addOption(this); //반대편 연관관계 설정
         }
     }
-
 }

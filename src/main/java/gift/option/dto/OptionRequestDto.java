@@ -25,9 +25,7 @@ public class OptionRequestDto {
         this.price = price;
     }
 
-    public OptionRequestDto() {
-
-    }
+    protected OptionRequestDto() { }
 
     public String getName() {
         return name;
