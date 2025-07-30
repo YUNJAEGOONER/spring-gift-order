@@ -1,16 +1,14 @@
 package gift.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record MessageDto(
-        @JsonProperty("product_name")
         String productName,
-        @JsonProperty("option_name")
         String optionName,
-        @JsonProperty("product_price")
         Integer productPrice,
         Integer quantity,
-        @JsonProperty("total_price")
         Integer totalPrice,
         String message
 ) {}

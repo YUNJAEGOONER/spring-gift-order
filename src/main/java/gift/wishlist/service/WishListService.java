@@ -1,6 +1,7 @@
 package gift.wishlist.service;
 
 import gift.exception.ErrorCode;
+import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
@@ -28,7 +29,8 @@ public class WishListService {
     private final OptionRepository optionRepository;
     private final MemberRepository memberRepository;
 
-    public WishListService(WishListRepository wishListRepository, OptionRepository optionRepository, MemberRepository memberRepository) {
+    public WishListService(WishListRepository wishListRepository, OptionRepository optionRepository, MemberRepository memberRepository,
+            KakaoApiService kakaoApiService) {
         this.wishListRepository = wishListRepository;
         this.optionRepository = optionRepository;
         this.memberRepository = memberRepository;

@@ -18,6 +18,8 @@ import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.product.entity.Product;
+import gift.wishlist.repository.WishListRepository;
+import gift.wishlist.service.WishListService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,11 +44,14 @@ class OrderServiceTest {
     @Mock
     private KakaoApiService kakaoApiService;
 
+    @Mock
+    private WishListRepository wishListRepository;
+
     private OrderService orderService;
 
     @BeforeEach
     void setUp(){
-        orderService = new OrderService(optionRepository, memberRepository, orderRepository, kakaoApiService);
+        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListRepository, kakaoApiService);
     }
 
     @Test

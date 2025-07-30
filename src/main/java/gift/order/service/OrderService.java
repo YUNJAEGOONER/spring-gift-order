@@ -11,6 +11,7 @@ import gift.order.dto.OrderRequestDto;
 import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
+import gift.wishlist.repository.WishListRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +24,19 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
     private final KakaoApiService kakaoApiService;
+    private final WishListRepository wishListRepository;
 
-    public OrderService(OptionRepository optionRepository, MemberRepository memberRepository,
-            OrderRepository orderRepository, KakaoApiService kakaoApiService) {
+    public OrderService(
+            OptionRepository optionRepository,
+            MemberRepository memberRepository,
+            OrderRepository orderRepository,
+            WishListRepository wishListRepository,
+            KakaoApiService kakaoApiService
+    ) {
         this.optionRepository = optionRepository;
         this.memberRepository = memberRepository;
         this.orderRepository = orderRepository;
+        this.wishListRepository = wishListRepository;
         this.kakaoApiService = kakaoApiService;
     }
 
@@ -43,6 +51,11 @@ public class OrderService {
         option.removeStock(requestDto.quantity());
         Order order = new Order(option, member, requestDto.quantity(), requestDto.message());
         orderRepository.save(order);
+
+        //상품 바로 구매를 하는 경우
+        if(requestDto.wishId() != null){
+            wishListRepository.removeWishListById(requestDto.wishId());
+        }
 
         //상품, 주문 정보를 카카오톡 메시지로 전송
         MessageDto messageDto = new MessageDto(
