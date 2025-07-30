@@ -3,7 +3,7 @@ package gift.kakaoapi.controller;
 import gift.jwt.JwtAuthService;
 import gift.kakaoapi.dto.UserInfo;
 import gift.kakaoapi.service.KakaoApiService;
-import gift.kakaoapi.tokenmanager.TokenService;
+import gift.kakaoapi.tokenmanager.KakaoTokenService;
 import gift.member.dto.MemberRequestDto;
 import gift.member.entity.Member;
 import gift.member.service.MemberService;
@@ -27,17 +27,17 @@ public class KakaoLoginViewController {
     private final KakaoApiService kakaoApiService;
     private final MemberService memberService;
     private final JwtAuthService jwtAuthService;
-    private final TokenService tokenService;
+    private final KakaoTokenService kakaoTokenService;
 
     public KakaoLoginViewController(
             KakaoApiService kakaoApiService,
             MemberService memberService,
-            JwtAuthService jwtAuthService, TokenService tokenService
+            JwtAuthService jwtAuthService, KakaoTokenService kakaoTokenService
     ) {
         this.kakaoApiService = kakaoApiService;
         this.memberService = memberService;
         this.jwtAuthService = jwtAuthService;
-        this.tokenService = tokenService;
+        this.kakaoTokenService = kakaoTokenService;
     }
 
     //로그인 화면 불러오기
@@ -81,7 +81,7 @@ public class KakaoLoginViewController {
         String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId(), member.getRole());
 
         //DB에서 카카오 api 엑세스 토큰을 저장(관리)
-        tokenService.saveUserToken(member.getMemberId(), accessToken);
+        kakaoTokenService.saveUserToken(member.getMemberId(), accessToken);
 
         //로그인 정보를 바탕으로 JWT를 쿠키를 통해 전달
         Cookie tcookie = new Cookie("token", token);

@@ -9,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class UserToken {
+public class KakaoToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +21,10 @@ public class UserToken {
 
     private String token;
 
-    protected UserToken() {
+    protected KakaoToken() {
     }
 
-    public UserToken(Member member, String token) {
+    public KakaoToken(Member member, String token) {
         this.member = member;
         this.token = token;
     }

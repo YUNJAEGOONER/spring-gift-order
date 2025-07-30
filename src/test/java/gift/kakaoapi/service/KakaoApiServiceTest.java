@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
-import gift.kakaoapi.tokenmanager.TokenRepository;
+import gift.kakaoapi.tokenmanager.KakaoTokenRepository;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class KakaoApiServiceTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private TokenRepository tokenRepository;
+    private KakaoTokenRepository kakaoTokenRepository;
 
     @Autowired
     private KakaoApiService kakaoApiService;

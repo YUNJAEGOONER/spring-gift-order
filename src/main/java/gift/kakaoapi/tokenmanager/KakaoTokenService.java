@@ -7,22 +7,22 @@ import gift.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TokenService {
+public class KakaoTokenService {
 
-    private final TokenRepository tokenRepository;
+    private final KakaoTokenRepository kakaoTokenRepository;
     private final MemberRepository memberRepository;
 
-    public TokenService(TokenRepository tokenRepository, MemberRepository memberRepository) {
-        this.tokenRepository = tokenRepository;
+    public KakaoTokenService(KakaoTokenRepository kakaoTokenRepository, MemberRepository memberRepository) {
+        this.kakaoTokenRepository = kakaoTokenRepository;
         this.memberRepository = memberRepository;
     }
 
     public void saveUserToken(Long memberId, String accessToken){
         Member member = memberRepository.findMemberById(memberId).orElseThrow(
                 ()-> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        tokenRepository.findUserTokenByMemberId(memberId)
+        kakaoTokenRepository.findUserTokenByMemberId(memberId)
                 .ifPresentOrElse(token -> token.updateAccessToken(accessToken),
-                        () -> tokenRepository.save(new UserToken(member, accessToken)));
+                        () -> kakaoTokenRepository.save(new KakaoToken(member, accessToken)));
 
     }
 

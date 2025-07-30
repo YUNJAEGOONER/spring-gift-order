@@ -53,7 +53,7 @@ create table orders
     foreign key (option_id) references option (id)
 );
 
-create table user_token
+create table kakao_token
 (
     id        bigint auto_increment,
     member_id bigint       not null,

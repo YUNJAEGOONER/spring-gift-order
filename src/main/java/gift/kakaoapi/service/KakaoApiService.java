@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
-import gift.kakaoapi.tokenmanager.TokenRepository;
+import gift.kakaoapi.tokenmanager.KakaoTokenRepository;
 import gift.order.dto.MessageDto;
 import java.net.URI;
 import java.time.Duration;
@@ -35,11 +35,11 @@ public class KakaoApiService {
 
     private final ObjectMapper objectMapper;
 
-    private final TokenRepository tokenRepository;
+    private final KakaoTokenRepository kakaoTokenRepository;
 
-    public KakaoApiService(ObjectMapper objectMapper, TokenRepository tokenRepository, RestTemplateBuilder restTemplateBuilder) {
+    public KakaoApiService(ObjectMapper objectMapper, KakaoTokenRepository kakaoTokenRepository, RestTemplateBuilder restTemplateBuilder) {
         this.objectMapper = objectMapper;
-        this.tokenRepository = tokenRepository;
+        this.kakaoTokenRepository = kakaoTokenRepository;
         this.restTemplate = restTemplateBuilder
                 .connectTimeout(Duration.ofSeconds(5L))
                 .readTimeout(Duration.ofSeconds(5L))
@@ -97,7 +97,7 @@ public class KakaoApiService {
     public void sendMessageToCustomer(Long memberId, MessageDto messageDto){
         log.info("[구매자에게 메세지 보내기]");
         //카카오톡 로그인을 하지 않은 경우에는, 메시지를 보낼 수 없음,,,
-        tokenRepository.findUserTokenByMemberId(memberId)
+        kakaoTokenRepository.findUserTokenByMemberId(memberId)
                 .ifPresent(token ->
                 {
                     String url = "https://kapi.kakao.com/v2/api/talk/memo/send";
