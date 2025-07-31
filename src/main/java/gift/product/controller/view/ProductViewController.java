@@ -34,7 +34,7 @@ public class ProductViewController {
         }
         Page<ProductResponseDto> productList = productService.findAll(page, size);
         model.addAttribute("productList", productList);
-        return "/yjshop/user/home";
+        return "yjshop/user/home";
     }
 
     //특정 상품을 조회
@@ -45,7 +45,7 @@ public class ProductViewController {
     ) {
         ProductOptionResponseDto productOption = productService.findProductOption(id);
         model.addAttribute("product", productOption);
-        return "/yjshop/user/productinfo";
+        return "yjshop/user/productinfo";
     }
 
     //특정 상품을 검색(상품명을 통한 검색)
@@ -66,7 +66,7 @@ public class ProductViewController {
         Page<ProductResponseDto> product = productService.searchProduct(name, page, size);
         model.addAttribute("productList", product);
         model.addAttribute("searchkeyword", name);
-        return "/yjshop/user/search";
+        return "yjshop/user/search";
     }
 
 }

@@ -46,7 +46,7 @@ public class KakaoLoginViewController {
         String login_url = kakaoApiService.getLoginLink();
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("login_url", login_url);
-        return "/yjshop/user/login";
+        return "yjshop/user/login";
     }
 
     //필터예외처리 -> forward (error 메시지를 request에 setAttribute)
@@ -55,7 +55,7 @@ public class KakaoLoginViewController {
         String login_url = kakaoApiService.getLoginLink();
         model.addAttribute("errormsg", request.getAttribute("errormsg"));
         model.addAttribute("login_url", login_url);
-        return "/yjshop/user/loginerror";
+        return "yjshop/user/loginerror";
     }
 
     // 리다이렉트 URI: 카카오 로그인의 인가 코드를 전달하기 위한 리다이렉트 URI를 등록합니다.
