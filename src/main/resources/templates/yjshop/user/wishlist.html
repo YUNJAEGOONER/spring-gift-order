@@ -1,0 +1,214 @@
+<html layout:decorate="~{yjshop/user/layout}">
+<div layout:fragment="content">
+
+  <style>
+    /* 테이블 기본 스타일 */
+    #wishlist-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* 헤더 스타일 */
+    #wishlist-table thead th {
+      background-color: #f0f0f0;
+      padding: 12px 8px;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #ccc;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* 바디 셀 스타일 */
+    #wishlist-table tbody td {
+      border-bottom: 1px solid #ddd;
+      padding: 14px 8px;
+      vertical-align: middle;
+      text-align: center;
+      color: #444;
+    }
+
+    /* 상품 정보 셀: 이미지 + 텍스트 */
+    .product-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .product-image {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+    }
+
+    .product-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #222;
+      margin: 0;
+    }
+
+    .option-name {
+      font-size: 0.9rem;
+      color: #666;
+      margin: 0;
+    }
+
+    /* 수량, 가격 셀 텍스트 */
+    .centered-cell {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    /* 버튼 그룹 */
+    .action-buttons form {
+      display: inline-block;
+      margin: 0 4px;
+    }
+
+    .action-buttons button {
+      height: 30px;
+      padding: 0 14px;
+      font-size: 13px;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .action-buttons button:hover {
+      background-color: #388e3c;
+    }
+
+    /* 페이지네이션 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      padding-left: 0;
+      list-style: none;
+      gap: 8px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .pagination .page-item {
+      user-select: none;
+    }
+
+    .pagination .page-link {
+      color: #4caf50;
+      border: 1px solid #4caf50;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .pagination .page-link:hover:not(.disabled) {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .pagination .active .page-link {
+      background-color: #4caf50;
+      color: white;
+      cursor: default;
+    }
+
+    .pagination .disabled .page-link {
+      color: #ccc;
+      border-color: #ccc;
+      cursor: default;
+      pointer-events: none;
+    }
+  </style>
+
+  <table id="wishlist-table">
+    <thead>
+    <tr>
+      <th>상품정보</th>
+      <th>수량</th>
+      <th>가격</th>
+      <th>장바구니 수정</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="responseDto : ${wishlist}">
+      <td>
+        <div class="product-info">
+          <img class="product-image" th:src="@{${responseDto.productImage}}" alt="상품 이미지" />
+          <div class="product-text">
+            <p class="product-name" th:text="${responseDto.productName}">상품명</p>
+            <p class="option-name" th:text="${responseDto.optionName}">옵션명</p>
+          </div>
+        </div>
+      </td>
+
+      <td class="centered-cell" th:text="${responseDto.quantity}">1</td>
+      <td class="centered-cell" th:text="|₩ ${responseDto.price}|">₩10,000</td>
+
+      <td class="centered-cell action-buttons">
+        <form th:action="@{/view/my/wishlist/add/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+          <button type="submit">+</button>
+        </form>
+        <form th:action="@{/view/my/wishlist/subtract/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+          <button type="submit">-</button>
+        </form>
+        <form th:action="@{/view/my/orders/payment}" method="get">
+          <input type="hidden" name="wishListId" th:value="${responseDto.wishListId()}" />
+          <input type="hidden" name="optionId" th:value="${responseDto.optionId()}" />
+          <input type="hidden" name="quantity" th:value="${responseDto.quantity()}" />
+          <button type="submit">바로 구매</button>
+        </form>
+        <form th:action="@{/view/my/wishlist/delete/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+          <button type="submit">비우기</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이지네이션 -->
+  <div th:if="${!wishlist.empty}">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item" th:classappend="${!wishlist.hasPrevious()} ? 'disabled'">
+        <a class="page-link" th:href="@{|?page=${wishlist.number - 1}|}" th:if="${wishlist.hasPrevious()}">이전</a>
+        <a class="page-link" th:unless="${wishlist.hasPrevious()}">이전</a>
+      </li>
+
+      <li th:each="page : ${#numbers.sequence(0, wishlist.totalPages - 1)}"
+          th:if="${page >= wishlist.number - 5 and page <= wishlist.number + 5}"
+          th:classappend="${page == wishlist.number} ? ' active'"
+          class="page-item">
+        <a class="page-link" th:text="${page + 1}" th:href="@{|?page=${page}|}"></a>
+      </li>
+
+      <li class="page-item" th:classappend="${!wishlist.hasNext()} ? 'disabled'">
+        <a class="page-link" th:href="@{|?page=${wishlist.number + 1}|}" th:if="${wishlist.hasNext()}">다음</a>
+        <a class="page-link" th:unless="${wishlist.hasNext()}">다음</a>
+      </li>
+
+    </ul>
+  </div>
+
+</div>
+</html>

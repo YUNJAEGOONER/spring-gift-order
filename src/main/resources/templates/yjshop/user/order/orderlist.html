@@ -1,0 +1,106 @@
+<html layout:decorate="~{yjshop/user/layout}">
+<div layout:fragment="content">
+
+  <style>
+    .order-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin: 20px auto;
+      max-width: 70%;
+    }
+
+    .order-card {
+      display: flex;
+      align-items: flex-start;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .product-image {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      background-color: #f9f9f9;
+      margin-right: 20px;
+    }
+
+    .order-info {
+      display: flex;
+      justify-content: space-between;
+      flex: 1;
+      gap: 20px;
+    }
+
+    .order-column {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .order-detail-line {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #555;
+      width: 100px;
+    }
+
+    .value {
+      color: #333;
+      flex: 1;
+      word-break: break-word;
+    }
+  </style>
+
+  <div class="order-container">
+    <div class="order-card" th:each="order : ${orderList}">
+      <img class="product-image" th:src="@{${order.productImage}}" alt="상품 이미지"/>
+
+      <div class="order-info">
+        <!-- 왼쪽 열 -->
+        <div class="order-column">
+          <div class="order-detail-line">
+            <span class="label">주문일시:</span>
+            <span class="value" th:text="${order.orderDateTime}"></span>
+          </div>
+          <div class="order-detail-line">
+            <span class="label">상품명:</span>
+            <span class="value" th:text="${order.productName}"></span>
+          </div>
+          <div class="order-detail-line">
+            <span class="label">옵션:</span>
+            <span class="value" th:text="${order.optionName}"></span>
+          </div>
+          <div class="order-detail-line">
+            <span class="label">전달 메시지:</span>
+            <span class="value" th:text="${order.message}"></span>
+          </div>
+        </div>
+
+        <!-- 오른쪽 열 -->
+        <div class="order-column">
+          <div class="order-detail-line">
+            <span class="label">수량:</span>
+            <span class="value" th:text="${order.quantity}"></span>
+          </div>
+          <div class="order-detail-line">
+            <span class="label">결제금액:</span>
+            <span class="value" th:text="${order.price}"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</html>

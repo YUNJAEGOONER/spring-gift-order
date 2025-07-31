@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+<head>
+  <meta charset="UTF-8">
+  <title>와이제이 쇼핑몰</title>
+  <style>
+    #layout-nav {
+      background-color: #27ae60; /* 진한 녹색 */
+      padding: 12px 0; /* 좌우 패딩 제거하고 위아래만 */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      border-radius: 10px; /* 둥글둥글 */
+      max-width: 1200px;
+      margin: 20px auto; /* 중앙 정렬 */
+    }
+
+    #layout-nav .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* 좌우 끝으로 */
+      padding: 0 20px; /* 내부 좌우 약간 공간 */
+    }
+
+    #layout-nav .nav-left {
+      margin-left: 0; /* 좌측 끝으로 */
+      flex-shrink: 0; /* 줄어들지 않도록 */
+    }
+
+    #layout-nav .nav-left a {
+      text-decoration: none;
+      color: white;
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: 1.5px;
+      transition: color 0.3s ease;
+    }
+
+    #layout-nav .nav-left a:hover {
+      color: #d4f1be;
+    }
+
+    #layout-nav .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-right: 0; /* 우측 끝으로 */
+    }
+
+    #layout-nav form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #layout-nav input[type="text"] {
+      padding: 7px 12px;
+      border-radius: 20px; /* 둥글게 */
+      border: none;
+      font-size: 14px;
+      width: 200px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    #layout-nav input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 0 5px #a3d9a5;
+    }
+
+    #layout-nav input[type="submit"] {
+      background-color: #a2d36c;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 20px; /* 둥글게 */
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    #layout-nav input[type="submit"]:hover {
+      background-color: #89bf4f;
+    }
+
+    #layout-nav .nav-right a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 10px; /* 둥글게 */
+      transition: background-color 0.3s ease;
+    }
+
+    #layout-nav .nav-right a:hover {
+      background-color: #a2d36c;
+      color: #fff;
+    }
+
+
+    /* 기존 테이블 스타일은 여기 그대로 유지하세요 */
+    table {
+      border-collapse: collapse;
+      margin: 30px auto;
+      max-width: 900px;
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #ccc;
+      font-family: sans-serif;
+    }
+
+    thead {
+      background-color: #eaffea; /* 연한 연두색 */
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ccc;
+      vertical-align: middle;
+    }
+
+  </style>
+
+</head>
+<body>
+<nav id="layout-nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a th:href="@{/view/products/list}">와이제이 쇼핑</a>
+    </div>
+    <div class="nav-right">
+      <form th:action="@{/view/products/search}" method="get">
+        <input type="text" name="name" placeholder="상품 키워드 입력">
+        <input type="submit" value="상품 검색하기">
+      </form>
+      <a th:href="@{/view/my/orders/list}">구매내역</a>
+      <a th:href="@{/view/my/wishlist}">장바구니</a>
+      <a th:href="@{/view/my/logout}">로그아웃</a>
+    </div>
+  </div>
+</nav>
+
+<th:block layout:fragment="content"></th:block>
+
+</body>
+</html>

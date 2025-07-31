@@ -1,0 +1,140 @@
+<html layout:decorate="~{yjshop/user/layout}">
+<div layout:fragment="content">
+
+  <style>
+    .order-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .product-info img {
+      width: 80px;
+      height: auto;
+      max-height: 80px;
+      aspect-ratio: 1 / 1;
+      object-fit: contain; /* 잘리지 않게 */
+      border-radius: 8px;
+      margin-right: 16px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9; /* 여백 배경 */
+    }
+
+    .product-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .product-price {
+      font-size: 0.95rem;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .summary {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .summary span {
+      font-weight: 600;
+      margin-left: 6px;
+      color: #000;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 0.95rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #38b000;
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #2d9100;
+    }
+  </style>
+
+  <div class="order-container">
+    <form th:action="@{/view/my/orders}" method="post">
+
+      <input type="hidden" name="wishId" th:value="${orderInfo.wishListId()}">
+      <input type="hidden" name="optionId" th:value="${orderInfo.option.id}">
+      <input type="hidden" name="quantity" th:value="${orderInfo.quantity}">
+
+      <!-- 상품 정보 -->
+      <div class="section">
+        <div class="product-info">
+          <img th:src="${orderInfo.product.imageUrl}" alt="상품 이미지">
+          <div>
+            <div class="product-name" th:text="${orderInfo.product.name}">상품명</div>
+            <div class="product-price" th:text="'₩' + ${orderInfo.product.price}">₩10,000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 옵션 정보 -->
+      <div class="section">
+        <div class="section-title">옵션 정보</div>
+        <div class="summary">옵션명: <span th:text="${orderInfo.option.optionName}">기본</span></div>
+        <div class="summary">추가 금액: <span th:text="'₩' + ${orderInfo.option.price}">₩0</span></div>
+      </div>
+
+      <!-- 수량 및 총 금액 -->
+      <div class="section">
+        <div class="section-title">결제 금액</div>
+        <div class="summary">수량: <span th:text="${orderInfo.quantity}">1</span></div>
+        <div class="summary">총 금액: <span th:text="'₩' + ${orderInfo.price}">₩11,000</span></div>
+      </div>
+
+      <!-- 메시지 -->
+      <div class="section">
+        <div class="section-title">전달 메시지</div>
+        <textarea name="message" maxlength="255" th:value="${message}" placeholder="전달할 메시지를 입력해 주세요 (선택)" rows="3"></textarea>
+      </div>
+
+      <!-- 주문 버튼 -->
+      <button type="submit" class="submit-btn">주문하기</button>
+    </form>
+  </div>
+
+</div>
+</html>

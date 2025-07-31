@@ -1,0 +1,165 @@
+<html layout:decorate="~{yjshop/user/layout}">
+<div layout:fragment="content">
+  <style>
+    .product-box {
+      max-width: 75%;
+      margin: 40px auto;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      gap: 40px;
+      background-color: #fff;
+    }
+
+    .product-image {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-image img {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .product-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .product-details h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .product-details .name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .product-details .price {
+      font-size: 18px;
+      color: #2d2d2d;
+    }
+
+    .product-details select,
+    .product-details input[type="number"] {
+      padding: 8px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    .product-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .product-actions input[type="submit"],
+    .product-actions button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* 🎨 쇼핑몰 테마에 어울리는 버튼 컬러 */
+    .btn-cart {
+      background-color: #f9cc3d;
+      color: #222;
+      border: 1px solid #e0b72d;
+    }
+
+    .btn-cart:hover {
+      background-color: #f2b700;
+      border-color: #d9a700;
+    }
+
+    .btn-buy {
+      background-color: #ff7c47;
+      color: white;
+      border: 1px solid #e26635;
+    }
+
+    .btn-buy:hover {
+      background-color: #e76a35;
+      border-color: #cc4f23;
+    }
+  </style>
+
+  <div class="product-box">
+    <!-- 왼쪽: 이미지 -->
+    <div class="product-image">
+      <img th:src="${product.imageUrl}" alt="상품 이미지">
+    </div>
+
+    <!-- 오른쪽: 상세 정보 -->
+    <div class="product-details">
+      <h3>상품 정보</h3>
+      <div class="name" th:text="${product.name}">상품명</div>
+      <div class="price" th:text="'₩' + ${product.price}">가격</div>
+
+      <!-- 공통 옵션 선택과 수량 입력 -->
+      <div>
+        <label><strong>옵션 선택</strong></label>
+        <select name="optionId" id="optionId" required>
+          <option value="" disabled selected>옵션을 선택하세요</option>
+          <option th:each="option : ${product.options}"
+                  th:value="${option.id}"
+                  th:text="${option.optionName} + ' (+' + ${option.price()} + ')'">
+          </option>
+        </select>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <label><strong>수량</strong></label>
+        <input type="number" name="quantity" id="quantity" min="1" value="1" required>
+      </div>
+
+      <!-- 버튼 2개 (서로 다른 요청 전송) -->
+      <div class="product-actions">
+        <!-- 장바구니 담기 -->
+        <form th:action="@{/view/my/wishlist}" method="post" onsubmit="return setHiddenValues(this)">
+          <input type="hidden" name="optionId">
+          <input type="hidden" name="quantity">
+          <input type="submit" value="장바구니 담기" class="btn-cart">
+        </form>
+
+        <!-- 바로 구매하기 -->
+        <form th:action="@{/view/my/orders/payment}" method="get" onsubmit="return setHiddenValues(this)">
+          <input type="hidden" name="optionId">
+          <input type="hidden" name="quantity">
+          <button type="submit" class="btn-buy">바로 구매하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공통 옵션을 양쪽 form에 복사하는 스크립트 -->
+  <script>
+    function setHiddenValues(form) {
+      const optionId = document.getElementById("optionId").value;
+      const quantity = document.getElementById("quantity").value;
+      form.querySelector('input[name="optionId"]').value = optionId;
+      form.querySelector('input[name="quantity"]').value = quantity;
+      return true;
+    }
+  </script>
+</div>
+</html>
