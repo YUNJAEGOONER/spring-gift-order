@@ -2,6 +2,7 @@ package gift.kakaoapi.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -17,9 +18,11 @@ public class KakaoMessageEventListener {
         this.kakaoApiService = kakaoApiService;
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void kakaoMessageHandler(KakaoMessageEvent event){
         log.info("TransactionalEventListener");
+        log.info(Thread.currentThread().getName());
         kakaoApiService.sendMessageToCustomer(event.memberId(), event.messageDto());
     }
 

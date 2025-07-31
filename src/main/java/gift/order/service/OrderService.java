@@ -18,6 +18,7 @@ import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.wishlist.repository.WishListRepository;
+import gift.wishlist.service.WishListService;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +34,16 @@ public class OrderService {
     private final OptionRepository optionRepository;
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
-    private final WishListRepository wishListRepository;
+    private final WishListService wishListService;
     private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(OptionRepository optionRepository, MemberRepository memberRepository,
-            OrderRepository orderRepository, WishListRepository wishListRepository,
+            OrderRepository orderRepository, WishListService wishListService,
             ApplicationEventPublisher eventPublisher) {
         this.optionRepository = optionRepository;
         this.memberRepository = memberRepository;
         this.orderRepository = orderRepository;
-        this.wishListRepository = wishListRepository;
+        this.wishListService = wishListService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -60,9 +61,10 @@ public class OrderService {
 
         //장바구니 내역 삭제
         if(requestDto.wishId() != null){
-            wishListRepository.removeWishListById(requestDto.wishId());
+            wishListService.removeFromWishList(requestDto.wishId());
         }
 
+        log.info(Thread.currentThread().getName());
         sendMessage(order, memberId);
 
         return new OrderResponseDto(
