@@ -2,8 +2,10 @@ package gift.kakaoapi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.exception.ErrorCode;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
+import gift.kakaoapi.exception.KakaoApiException;
 import gift.kakaoapi.tokenmanager.KakaoTokenRepository;
 import gift.order.dto.MessageDto;
 import java.net.URI;
@@ -15,7 +17,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -81,12 +86,10 @@ public class KakaoApiService {
         log.info("[step3:사용자 로그인 처리]: 사용자 정보 가져오기");
         String url = "https://kapi.kakao.com/v2/user/me";
 
-        //요청 헤더
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        //요청 바디 - property_keys 파라미터를 사용하면 특정 정보만 지정해 요청할 수 있습니다
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("property_keys", "[\"kakao_account.email\"]");
 
@@ -94,19 +97,17 @@ public class KakaoApiService {
         return restTemplate.postForEntity(url, request, UserInfo.class).getBody();
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendMessageToCustomer(Long memberId, MessageDto messageDto){
         log.info("[구매자에게 메세지 보내기]");
-        //카카오톡 로그인을 하지 않은 경우에는, 메시지를 보낼 수 없음,,,
         kakaoTokenRepository.findUserTokenByMemberId(memberId)
                 .ifPresent(token ->
                 {
                     String url = "https://kapi.kakao.com/v2/api/talk/memo/send";
 
-                    //헤더
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("Authorization", "Bearer " + token.getToken());
 
-                    //바디
                     LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
                     body.add("template_id", "122830");
                     try {

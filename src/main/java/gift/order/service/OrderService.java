@@ -1,7 +1,13 @@
 package gift.order.service;
 
+import gift.exception.ErrorCode;
+import gift.exception.MyException;
+import gift.kakaoapi.exception.KakaoApiException;
 import gift.kakaoapi.service.KakaoApiService;
+import gift.kakaoapi.service.KakaoMessageEvent;
+import gift.kakaoapi.service.KakaoMessageEventListener;
 import gift.member.entity.Member;
+import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
@@ -13,6 +19,9 @@ import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.wishlist.repository.WishListRepository;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,24 +29,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class OrderService {
 
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OptionRepository optionRepository;
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
-    private final KakaoApiService kakaoApiService;
     private final WishListRepository wishListRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderService(
-            OptionRepository optionRepository,
-            MemberRepository memberRepository,
-            OrderRepository orderRepository,
-            WishListRepository wishListRepository,
-            KakaoApiService kakaoApiService
-    ) {
+    public OrderService(OptionRepository optionRepository, MemberRepository memberRepository,
+            OrderRepository orderRepository, WishListRepository wishListRepository,
+            ApplicationEventPublisher eventPublisher) {
         this.optionRepository = optionRepository;
         this.memberRepository = memberRepository;
         this.orderRepository = orderRepository;
         this.wishListRepository = wishListRepository;
-        this.kakaoApiService = kakaoApiService;
+        this.eventPublisher = eventPublisher;
     }
 
     //주문을 생성하는 기능
@@ -52,20 +58,12 @@ public class OrderService {
         Order order = new Order(option, member, requestDto.quantity(), requestDto.message());
         orderRepository.save(order);
 
-        //상품 바로 구매를 하는 경우
+        //장바구니 내역 삭제
         if(requestDto.wishId() != null){
             wishListRepository.removeWishListById(requestDto.wishId());
         }
 
-        //상품, 주문 정보를 카카오톡 메시지로 전송
-        MessageDto messageDto = new MessageDto(
-                option.getProduct().getName(),
-                option.getName(),
-                option.calculateSalePrice(),
-                requestDto.quantity(),
-                order.getTotalPrice(),
-                requestDto.message());
-        kakaoApiService.sendMessageToCustomer(member.getMemberId(), messageDto);
+        sendMessage(order, memberId);
 
         return new OrderResponseDto(
                 order.getId(),
@@ -75,6 +73,17 @@ public class OrderService {
                 order.getTotalPrice(),
                 order.getOrderDateTime(),
                 order.getMessage());
+    }
+
+    public void sendMessage(Order order, Long memberId){
+        MessageDto messageDto = new MessageDto(
+                order.getOption().getProduct().getName(),
+                order.getOption().getName(),
+                order.getTotalPrice(),
+                order.getQuantity(),
+                order.getTotalPrice(),
+                order.getMessage());
+        eventPublisher.publishEvent(new KakaoMessageEvent(memberId, messageDto));
     }
 
     @Transactional(readOnly = true)

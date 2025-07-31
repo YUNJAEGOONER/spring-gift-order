@@ -3,9 +3,8 @@ package gift.kakaoapi.exception;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 
-public class KakaoLoginException extends MyException {
-
-    public KakaoLoginException(ErrorCode errorCode) {
+public class KakaoApiException extends MyException {
+    public KakaoApiException(ErrorCode errorCode) {
         super(errorCode);
     }
 }

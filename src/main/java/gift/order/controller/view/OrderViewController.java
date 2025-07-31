@@ -34,14 +34,12 @@ public class OrderViewController {
     private final OrderService orderService;
     private final OptionService optionService;
     private final ProductService productService;
-    private final WishListService wishListService;
 
     public OrderViewController(OrderService orderService, OptionService optionService,
-            ProductService productService, WishListService wishListService) {
+            ProductService productService) {
         this.orderService = orderService;
         this.optionService = optionService;
         this.productService = productService;
-        this.wishListService = wishListService;
     }
 
     //결제 정보창을 가져오기 위한 메서드
@@ -60,7 +58,6 @@ public class OrderViewController {
     }
 
     //주문을 생성
-    @Transactional // 주문 생성됨과 동시에 해당 상품에 대한 장바구니를 삭제하기 위함
     @PostMapping("/orders")
     public String createOrders(
             @ModelAttribute @Valid OrderRequestDto orderRequestDto,
@@ -68,15 +65,11 @@ public class OrderViewController {
             @LoggedInMember Member member,
             HttpServletRequest request
     ){
-        //방문자가 왔는지를 파악할수 있는 기능 referer
         if(bindingResult.hasErrors()){
             String referer = request.getHeader("referer");
             return "redirect:" + referer;
         }
         orderService.createOrder(orderRequestDto, member.getMemberId());
-        if(orderRequestDto.wishId() != null){ //상품 정보에서 바로 구매를 통해 구매한 경우,,,
-            wishListService.removeFromWishList(orderRequestDto.wishId());
-        }
         return "redirect:/view/my/orders/list";
     }
 

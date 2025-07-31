@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -42,16 +44,16 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private KakaoApiService kakaoApiService;
+    private WishListRepository wishListRepository;
 
     @Mock
-    private WishListRepository wishListRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     private OrderService orderService;
 
     @BeforeEach
     void setUp(){
-        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListRepository, kakaoApiService);
+        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListRepository, eventPublisher);
     }
 
     @Test
@@ -106,7 +108,7 @@ class OrderServiceTest {
 
 
     @Test
-    void getMyOrders() {
+    void 나의_주문을_조회하는_기능() {
         //given
         Long memberId = 15L;
         Member member = new Member("test@test.com", "password");
