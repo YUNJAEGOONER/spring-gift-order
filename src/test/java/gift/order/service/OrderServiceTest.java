@@ -44,7 +44,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private WishListRepository wishListRepository;
+    private WishListService wishListService;
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
@@ -53,7 +53,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp(){
-        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListRepository, eventPublisher);
+        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListService, eventPublisher);
     }
 
     @Test
