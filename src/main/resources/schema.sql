@@ -17,7 +17,7 @@ create table member
     unique (email)
 );
 
-create table option
+create table product_option
 (
     id         bigint auto_increment,
     name       varchar(255) not null,
@@ -35,7 +35,7 @@ create table wishlist
     option_id bigint not null,
     quantity  int    not null,
     primary key (id),
-    foreign key (option_id) references option (id),
+    foreign key (option_id) references product_option (id),
     foreign key (member_id) references member (id)
 );
 
@@ -50,7 +50,7 @@ create table orders
     message         varchar(500),
     primary key (id),
     foreign key (member_id) references member (id),
-    foreign key (option_id) references option (id)
+    foreign key (option_id) references product_option (id)
 );
 
 create table kakao_token

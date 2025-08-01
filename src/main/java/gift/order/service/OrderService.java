@@ -1,13 +1,7 @@
 package gift.order.service;
 
-import gift.exception.ErrorCode;
-import gift.exception.MyException;
-import gift.kakaoapi.exception.KakaoApiException;
-import gift.kakaoapi.service.KakaoApiService;
 import gift.kakaoapi.service.KakaoMessageEvent;
-import gift.kakaoapi.service.KakaoMessageEventListener;
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
@@ -17,7 +11,6 @@ import gift.order.dto.OrderRequestDto;
 import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
-import gift.wishlist.repository.WishListRepository;
 import gift.wishlist.service.WishListService;
 import java.util.List;
 import org.slf4j.Logger;
