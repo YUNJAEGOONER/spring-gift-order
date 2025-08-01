@@ -6,6 +6,7 @@ import gift.infra.interceptor.LoginCheckInterceptor;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final LoginCheckInterceptor loginCheckInterceptor;
     private final AdminCheckInterceptor adminCheckInterceptor;
     private final LoggedInMemberArgumentResolver loggedInMemberArgumentResolver;
+    private static final String FE_ADDRESS = "http://localhost:3000";
 
     public WebConfig(
             LoginCheckInterceptor loginCheckInterceptor,
@@ -37,5 +39,17 @@ public class WebConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(loggedInMemberArgumentResolver);
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry corsRegistry){
+        corsRegistry.addMapping("/**")
+                .allowedOrigins(FE_ADDRESS)
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .exposedHeaders("Location")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+
+
 
 }

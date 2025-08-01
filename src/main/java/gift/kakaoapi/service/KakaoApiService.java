@@ -35,6 +35,8 @@ public class KakaoApiService {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
+    private final String MESSAGE_TEMPLATE_ID = "122830";
+
     //스프링 MVC가 제공해주는 외부와의 HTTP 통신 도구
     private final RestTemplate restTemplate;
 
@@ -109,7 +111,7 @@ public class KakaoApiService {
                     headers.add("Authorization", "Bearer " + token.getToken());
 
                     LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-                    body.add("template_id", "122830");
+                    body.add("template_id", MESSAGE_TEMPLATE_ID);
                     try {
                         body.add("template_args",objectMapper.writeValueAsString(messageDto));
                     } catch (JsonProcessingException e) {
