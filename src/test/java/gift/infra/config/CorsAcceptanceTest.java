@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class CorsAcceptanceTest {
 
     private final String ALLOWED_ORIGIN = "http://localhost:3000";
-    private static final String ALLOWED_METHOD_NAMES = "GET,POST,PUT,DELETE";
+    private static final String ALLOWED_METHOD_NAMES = "GET,POST,PUT,DELETE,OPTIONS";
 
     @Autowired
     private MockMvc mockMvc;
