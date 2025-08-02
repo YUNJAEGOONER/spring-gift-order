@@ -26,13 +26,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class KakaoApiService {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoApiService.class);
+    private final static String MESSAGE_TEMPLATE_ID = "122830";
+
     @Value("${kakao.client-id}")
     private String restApiKey;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
-
-    private final String MESSAGE_TEMPLATE_ID = "122830";
 
     //스프링 MVC가 제공해주는 외부와의 HTTP 통신 도구
     private final RestTemplate restTemplate;
