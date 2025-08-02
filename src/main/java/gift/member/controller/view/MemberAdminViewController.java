@@ -34,7 +34,7 @@ public class MemberAdminViewController {
     public String getMembers(Model model){
         List<Member> memberList = memberService.getAllMembers();
         model.addAttribute("memberList", memberList);
-        return "/yjshop/admin/member/home";
+        return "yjshop/admin/member/home";
     }
 
     //특정 회원 조회(이메일로 검색)
@@ -48,7 +48,7 @@ public class MemberAdminViewController {
         }
         Member member = memberService.getMemberByEmail(email).orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         model.addAttribute("member", member);
-        return "/yjshop/admin/member/memberinfo";
+        return "yjshop/admin/member/memberinfo";
     }
 
     //회원 등록 폼 가져오기
@@ -56,7 +56,7 @@ public class MemberAdminViewController {
     public String getMemeberForm(Model model){
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("memberDto", new MemberRequestDto(null, null));
-        return "/yjshop/admin/member/form";
+        return "yjshop/admin/member/form";
     }
 
     //회원 등록
@@ -87,7 +87,7 @@ public class MemberAdminViewController {
         Member member = memberService.findMember(id);
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("member", member);
-        return "/yjshop/admin/member/modifyForm";
+        return "yjshop/admin/member/modifyForm";
     }
 
     //회원 수정
@@ -106,7 +106,7 @@ public class MemberAdminViewController {
 
         if(bindingResult.hasErrors()){
             model.addAttribute("member", member);
-            return "/yjshop/admin/member/modifyForm";
+            return "yjshop/admin/member/modifyForm";
         }
 
         String email = memberService.modifyMember(id, memberRequestDto).getEmail();
@@ -123,7 +123,7 @@ public class MemberAdminViewController {
     @ExceptionHandler(MemberNotFoundException.class)
     public String productNotFound(MemberNotFoundException e, Model model) {
         model.addAttribute("errorMsg", e.getErrorCode().getMessage());
-        return "/yjshop/admin/member/membernotfound";
+        return "yjshop/admin/member/membernotfound";
     }
 
 }

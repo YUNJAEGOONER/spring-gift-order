@@ -48,7 +48,7 @@ public class ProductAdminViewController {
         }
         Page<ProductResponseDto> productList = productService.findAll(page, size);
         model.addAttribute("productList", productList);
-        return "/yjshop/admin/product/home";
+        return "yjshop/admin/product/home";
     }
 
     //상품 등록 화면을 가져오기
@@ -56,7 +56,7 @@ public class ProductAdminViewController {
     public String productForm(Model model) {
         model.addAttribute("productOptionRequestDto", new ProductOptionRequestDto());
         model.addAttribute("requestDto", new ProductOptionRequestDto());
-        return "/yjshop/admin/product/form";
+        return "yjshop/admin/product/form";
     }
 
     //특정 상품을 검색(id)
@@ -71,7 +71,7 @@ public class ProductAdminViewController {
         }
         ProductResponseDto product = productService.findOne(id);
         model.addAttribute("product", product);
-        return "/yjshop/admin/product/productinfo";
+        return "yjshop/admin/product/productinfo";
     }
 
     //등록된 상품을 삭제
@@ -91,7 +91,7 @@ public class ProductAdminViewController {
 
         if(bindingResult.hasErrors()){
             model.addAttribute("requestDto", requestDto);
-            return "/yjshop/admin/product/form";
+            return "yjshop/admin/product/form";
         }
 
         Product product = productService.add(requestDto);
@@ -111,7 +111,7 @@ public class ProductAdminViewController {
         ProductOptionResponseDto product = productService.findProductOption(id);
         model.addAttribute("product", product);
         model.addAttribute("productRequestDto", new ProductRequestDto());
-        return "/yjshop/admin/product/modifyform";
+        return "yjshop/admin/product/modifyform";
     }
 
     //상품 수정
@@ -125,7 +125,7 @@ public class ProductAdminViewController {
         if(bindingResult.hasErrors()){
             ProductResponseDto product = productService.findOne(id);
             model.addAttribute("product", product);
-            return "/yjshop/admin/product/modifyform";
+            return "yjshop/admin/product/modifyform";
         }
         productService.modify(id, requestDto);
         return "redirect:/view/admin/products";
@@ -138,14 +138,14 @@ public class ProductAdminViewController {
         ProductOptionResponseDto product = productService.findProductOption(id);
         model.addAttribute("product", product);
         model.addAttribute("productRequestDto", new ProductRequestDto());
-        return "/yjshop/admin/product/optionmodify";
+        return "yjshop/admin/product/optionmodify";
     }
 
 
     @ExceptionHandler(ProductNotFoundException.class)
     public String productNotFound(ProductNotFoundException e, Model model) {
         model.addAttribute("errorMsg", e.getErrorCode().getMessage());
-        return "/yjshop/admin/product/productnotfound";
+        return "yjshop/admin/product/productnotfound";
     }
 
     @ExceptionHandler(PageIndexException.class)

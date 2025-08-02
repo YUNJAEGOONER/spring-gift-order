@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
@@ -18,7 +17,6 @@ import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.product.entity.Product;
-import gift.wishlist.repository.WishListRepository;
 import gift.wishlist.service.WishListService;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -42,16 +41,16 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private KakaoApiService kakaoApiService;
+    private WishListService wishListService;
 
     @Mock
-    private WishListRepository wishListRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     private OrderService orderService;
 
     @BeforeEach
     void setUp(){
-        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListRepository, kakaoApiService);
+        orderService = new OrderService(optionRepository, memberRepository, orderRepository, wishListService, eventPublisher);
     }
 
     @Test
@@ -106,7 +105,7 @@ class OrderServiceTest {
 
 
     @Test
-    void getMyOrders() {
+    void 나의_주문을_조회하는_기능() {
         //given
         Long memberId = 15L;
         Member member = new Member("test@test.com", "password");

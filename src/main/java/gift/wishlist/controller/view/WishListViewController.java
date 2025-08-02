@@ -37,7 +37,7 @@ public class WishListViewController {
     ){
         Page<WishResponseDto> myWishList = wishListService.getList(member.getMemberId(), page, size);
         model.addAttribute("wishlist", myWishList);
-        return "/yjshop/user/wishlist";
+        return "yjshop/user/wishlist";
     }
 
     //위시리스트에 상품을 추가
@@ -74,12 +74,6 @@ public class WishListViewController {
     public String subtractItem(@PathVariable Long wishListId){
         wishListService.changeQuantity(wishListId, -1);
         return "redirect:/view/my/wishlist";
-    }
-
-    //결제창 이동
-    @GetMapping("/payment")
-    public String toPay(){
-        return "/yjshop/user/pay";
     }
 
 }

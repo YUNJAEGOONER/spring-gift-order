@@ -46,7 +46,7 @@ public class KakaoLoginViewController {
         String login_url = kakaoApiService.getLoginLink();
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("login_url", login_url);
-        return "/yjshop/user/login";
+        return "yjshop/user/login";
     }
 
     //필터예외처리 -> forward (error 메시지를 request에 setAttribute)
@@ -55,7 +55,7 @@ public class KakaoLoginViewController {
         String login_url = kakaoApiService.getLoginLink();
         model.addAttribute("errormsg", request.getAttribute("errormsg"));
         model.addAttribute("login_url", login_url);
-        return "/yjshop/user/loginerror";
+        return "yjshop/user/loginerror";
     }
 
     // 리다이렉트 URI: 카카오 로그인의 인가 코드를 전달하기 위한 리다이렉트 URI를 등록합니다.
@@ -74,16 +74,13 @@ public class KakaoLoginViewController {
         String email = userInfo.getKakaoAccount().getEmail();
         String tempPW = userInfo.getId() + LocalDate.now();
 
-        //해당 이메일을 통해 가입이 되어있다면, 회원 정보를 바탕으로 JWT를 발급
-        //해당 이메일을 통해 가입이 되어있지 않다면, 계정을 생성하고 JWT를 발급
+        //해당 이메일을 통해 가입이 되어있다면, 회원 정보를 바탕으로 JWT를 발급 else : 계정을 생성하고 JWT를 발급
         Member member = memberService.getMemberByEmail(email)
                 .orElseGet(() -> memberService.register(new MemberRequestDto(email, tempPW)));
         String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId(), member.getRole());
 
-        //DB에서 카카오 api 엑세스 토큰을 저장(관리)
         kakaoTokenService.saveUserToken(member.getMemberId(), accessToken);
 
-        //로그인 정보를 바탕으로 JWT를 쿠키를 통해 전달
         Cookie tcookie = new Cookie("token", token);
         tcookie.setPath("/");
         tcookie.setHttpOnly(true);

@@ -35,7 +35,7 @@ public class LoginViewController {
     @GetMapping("/registerform")
     public String registerForm(Model model){
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
-        return "/yjshop/user/register";
+        return "yjshop/user/register";
     }
 
     //회원가입 기능 -> 토큰을 반환 (쿠키에 저장)
@@ -51,7 +51,7 @@ public class LoginViewController {
 
         if(bindingResult.hasErrors()){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "/yjshop/user/register";
+            return "yjshop/user/register";
         }
         memberService.register(memberRequestDto);
         return "redirect:/view/loginform";
