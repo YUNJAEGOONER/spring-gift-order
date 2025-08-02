@@ -15,6 +15,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,9 +97,10 @@ public class KakaoApiService {
         return restTemplate.postForEntity(url, request, UserInfo.class).getBody();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void sendMessageToCustomer(Long memberId, MessageDto messageDto){
         log.info("[구매자에게 메세지 보내기]");
+        log.info(Thread.currentThread().getName());
         kakaoTokenRepository.findUserTokenByMemberId(memberId)
                 .ifPresent(token ->
                 {
