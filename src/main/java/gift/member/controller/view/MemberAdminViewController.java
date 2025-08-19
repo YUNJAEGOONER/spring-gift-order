@@ -85,31 +85,34 @@ public class MemberAdminViewController {
             Model model
     ){
         Member member = memberService.findMember(id);
-        model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("member", member);
-        return "yjshop/admin/member/modifyForm";
+
+        System.out.println("checkPoint = " + member.getEmail());
+
+        model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
+        return "yjshop/admin/member/modifyform";
     }
 
     //회원 수정
     @PostMapping("/members/modify/{id}")
     public String modifyMember(
-            @ModelAttribute @Valid MemberRequestDto memberRequestDto,
+            @ModelAttribute @Valid MemberRequestDto requestDto,
             BindingResult bindingResult,
             @PathVariable Long id,
             Model model
     ){
         Member member = memberService.findMember(id);
 
-        if(!memberService.checkAvailableModify(id, memberRequestDto)){
+        if(!memberService.checkAvailableModify(id, requestDto)){
             bindingResult.addError(new FieldError("memberRequestDto", "email", "이미 사용중인 이메일 입니다."));
         }
 
         if(bindingResult.hasErrors()){
             model.addAttribute("member", member);
-            return "yjshop/admin/member/modifyForm";
+            return "yjshop/admin/member/modifyform";
         }
 
-        String email = memberService.modifyMember(id, memberRequestDto).getEmail();
+        String email = memberService.modifyMember(id, requestDto).getEmail();
         return "redirect:/view/admin/members/search?email=" + email;
     }
 

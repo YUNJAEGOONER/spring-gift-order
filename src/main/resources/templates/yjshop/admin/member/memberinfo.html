@@ -81,7 +81,7 @@
       <td th:text="${member.role}"></td>
 
       <td>
-        <form th:action="@{/view/admin/members/modify/{id}(id=${member.memberId})}" method="post">
+        <form th:action="@{/view/admin/members/modify/{id}(id=${member.memberId})}" method="get">
           <button type="submit">회원 수정</button>
         </form>
 
