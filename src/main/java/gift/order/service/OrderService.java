@@ -1,14 +1,7 @@
 package gift.order.service;
 
 import gift.kakaoapi.service.KakaoMessageEvent;
-import gift.exception.ErrorCode;
-import gift.exception.MyException;
-import gift.kakaoapi.exception.KakaoApiException;
-import gift.kakaoapi.service.KakaoApiService;
-import gift.kakaoapi.service.KakaoMessageEvent;
-import gift.kakaoapi.service.KakaoMessageEventListener;
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
