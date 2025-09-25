@@ -2,8 +2,10 @@ package gift.kakaoapi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.exception.ErrorCode;
 import gift.kakaoapi.dto.TokenResponseDto;
 import gift.kakaoapi.dto.UserInfo;
+import gift.kakaoapi.exception.KakaoApiException;
 import gift.kakaoapi.tokenmanager.KakaoTokenRepository;
 import gift.order.dto.MessageDto;
 import java.net.URI;

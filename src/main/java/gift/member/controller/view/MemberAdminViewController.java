@@ -86,11 +86,7 @@ public class MemberAdminViewController {
     ){
         Member member = memberService.findMember(id);
         model.addAttribute("member", member);
-
-        System.out.println("checkPoint = " + member.getEmail());
-
-        model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
-        return "yjshop/admin/member/modifyform";
+        return "yjshop/admin/member/modifyForm";
     }
 
     //회원 수정

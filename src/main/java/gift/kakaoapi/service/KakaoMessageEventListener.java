@@ -18,7 +18,7 @@ public class KakaoMessageEventListener {
         this.kakaoApiService = kakaoApiService;
     }
 
-
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void kakaoMessageHandler(KakaoMessageEvent event){
         log.info("TransactionalEventListener");
