@@ -1,5 +1,6 @@
 package gift.order.service;
 
+import gift.kakaoapi.service.KakaoMessageEvent;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 import gift.kakaoapi.exception.KakaoApiException;
@@ -17,7 +18,6 @@ import gift.order.dto.OrderRequestDto;
 import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
-import gift.wishlist.repository.WishListRepository;
 import gift.wishlist.service.WishListService;
 import java.util.List;
 import org.slf4j.Logger;

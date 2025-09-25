@@ -29,6 +29,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class KakaoApiService {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoApiService.class);
+    private final static String MESSAGE_TEMPLATE_ID = "122830";
+
     @Value("${kakao.client-id}")
     private String restApiKey;
 
@@ -97,9 +99,10 @@ public class KakaoApiService {
         return restTemplate.postForEntity(url, request, UserInfo.class).getBody();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void sendMessageToCustomer(Long memberId, MessageDto messageDto){
         log.info("[구매자에게 메세지 보내기]");
+        log.info(Thread.currentThread().getName());
         kakaoTokenRepository.findUserTokenByMemberId(memberId)
                 .ifPresent(token ->
                 {
@@ -109,7 +112,7 @@ public class KakaoApiService {
                     headers.add("Authorization", "Bearer " + token.getToken());
 
                     LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-                    body.add("template_id", "122830");
+                    body.add("template_id", MESSAGE_TEMPLATE_ID);
                     try {
                         body.add("template_args",objectMapper.writeValueAsString(messageDto));
                     } catch (JsonProcessingException e) {

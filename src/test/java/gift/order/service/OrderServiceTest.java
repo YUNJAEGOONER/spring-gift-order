@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import gift.kakaoapi.service.KakaoApiService;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.option.entity.Option;
@@ -19,7 +18,6 @@ import gift.order.dto.OrderResponseDto;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.product.entity.Product;
-import gift.wishlist.repository.WishListRepository;
 import gift.wishlist.service.WishListService;
 import java.util.ArrayList;
 import java.util.List;
